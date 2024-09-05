@@ -1,0 +1,87 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'co.killionrevival.REPLACE_ME'
+version = '1.0.0'
+
+def javaVersion = JavaVersion.VERSION_21
+def encoding = 'UTF-8'
+def paperVersion = '1.21.1-R0.1-SNAPSHOT'
+def mcVersion = '1.21.1'
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    maven {
+        name 'papermc-repo'
+        url 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven { 
+        url 'https://jitpack.io' 
+    }
+    maven {
+        url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:${paperVersion}"
+    compileOnly "co.killionrevival:killioncommons:1.2.0-SNAPSHOT"
+}
+
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = encoding
+}
+
+tasks.processResources {
+    filesMatching('plugin.yml') {
+        expand (version: project.version, mcVersion: mcVersion)
+    }
+}
+
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId 'replace_me'
+        }
+    }
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/KillionRevival/REPLACE_ME')
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv('GITHUB_ACTOR')
+                password = project.findProperty("gpr.key") ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+    }
+}
+
+shadowJar {
+  configurations = [project.configurations.shadow]
+  archiveBaseName.set(project.name)
+  archiveVersion.set(project.version)
+  archiveClassifier.set('')
+}
+

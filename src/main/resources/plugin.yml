@@ -1,0 +1,8 @@
+name: REPLACE_ME
+version: ${version}
+main: co.killionrevival.REPLACE_ME.REPLACE_ME
+api-version: ${mcVersion}
+description: REPLACE_ME
+depend: [KillionCommons]
+commands:
+permissions:

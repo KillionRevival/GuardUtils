@@ -1,3 +1,5 @@
-plugin-prefix: "&8[&3REPLACEME&8] &r"
+plugin-prefix: "&8[&3GuardUtils&8] &r"
+log-level: INFO
 
-debug-mode: false
+countdown-time: 5
+

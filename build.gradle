@@ -4,7 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'co.killionrevival.REPLACE_ME'
+group = 'com.flyerzrule.mc.guardutils'
 version = '1.0.0'
 
 def javaVersion = JavaVersion.VERSION_21
@@ -33,7 +33,10 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
-    compileOnly "co.killionrevival:killioncommons:1.2.0-SNAPSHOT"
+    compileOnly "co.killionrevival:killioncommons:3.0.4-SNAPSHOT"
+
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 java {
@@ -63,13 +66,13 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifactId 'replace_me'
+            artifactId 'guardutils'
         }
     }
     repositories {
         maven {
             name = 'GitHubPackages'
-            url = uri('https://maven.pkg.github.com/KillionRevival/REPLACE_ME')
+            url = uri('https://maven.pkg.github.com/KillionRevival/GuardUtils')
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv('GITHUB_ACTOR')
                 password = project.findProperty("gpr.key") ?: System.getenv('GITHUB_TOKEN')

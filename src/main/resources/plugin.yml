@@ -1,8 +1,35 @@
-name: REPLACE_ME
+name: GuardUtils
 version: ${version}
-main: co.killionrevival.REPLACE_ME.REPLACE_ME
+main: com.flyerzrule.mc.guardutils.GuardUtils
 api-version: ${mcVersion}
-description: REPLACE_ME
+description: Plugin for making a guard's experience better 
+author: [flyerzrule]
 depend: [KillionCommons]
 commands:
+  sword:
+    description: Requests that a player drops their sword
+    usage: /<command> [username]
+    permission: guardutils.guard
+    permission-message: You do not have permission to use this command.
+  bow:
+    description: Requests that a player drops their bow
+    usage: /<command> [username]
+    permission: guardutils.guard
+    permission-message: You do not have permission to use this command.
+  contraband:
+    description: Requests that a player drops their other contraband
+    usage: /<command> [username]
+    permission: guardutils.guard
+    permission-message: You do not have permission to use this command.
+  kos:
+    description: Places a player on KOS for the specified amount of time
+    usage: /<command> <5|10|cancel|time> <username>
 permissions:
+  guardutils.guard:
+    description: Gives access to all guard GuardUtils commands
+  guardutils.player:
+    description: Gives access to all player GuardUtils commands
+    default: true
+  guardutils.admin:
+    description: Gives access to all admin GuardUtils commands
+    default: op

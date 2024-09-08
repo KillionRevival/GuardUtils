@@ -8,11 +8,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.guardutils.requests.Requests;
+import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
+import com.flyerzrule.mc.guardutils.requests.models.Item;
 import com.flyerzrule.mc.guardutils.utils.Message;
 import com.flyerzrule.mc.guardutils.utils.Utils;
-import com.flyerzrule.mc.guardutils.utils.requests.Requests;
-import com.flyerzrule.mc.guardutils.utils.requests.models.ContrabandType;
-import com.flyerzrule.mc.guardutils.utils.requests.models.Item;
 
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -55,7 +55,8 @@ public class OtherContrabandCommand implements CommandExecutor {
                                             contrabandItem.getName()));
                             player.sendMessage(message);
 
-                            Requests.addRequest(player, guard, ContrabandType.OTHER, contrabandItem);
+                            Requests requests = Requests.getInstance();
+                            requests.addRequest(player, guard, ContrabandType.OTHER, contrabandItem);
                             return true;
                         } else {
                             TextComponent message = Message.formatMessage(NamedTextColor.RED,

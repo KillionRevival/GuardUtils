@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.utils;
+package com.flyerzrule.mc.guardutils.kos;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,34 +10,46 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class KOSTimer {
-    private static Map<UUID, Long> kosTimers = new HashMap<>();
+    private static KOSTimer instance;
 
-    public static void setKOSTimer(Player player, int time) {
+    private Map<UUID, Long> kosTimers = new HashMap<>();
+
+    private KOSTimer() {
+    }
+
+    public static KOSTimer getInstance() {
+        if (instance == null) {
+            instance = new KOSTimer();
+        }
+        return instance;
+    }
+
+    public void setKOSTimer(Player player, int time) {
         long timeInMillis = time * 60 * 1000;
         long endTime = System.currentTimeMillis() + timeInMillis;
 
         kosTimers.put(player.getUniqueId(), endTime);
     }
 
-    public static void cancelKOSTimer(Player player) {
+    public void cancelKOSTimer(Player player) {
         if (isKOSTimerActive(player)) {
             kosTimers.remove(player.getUniqueId());
         }
     }
 
-    public static boolean isKOSTimerActive(Player player) {
+    public boolean isKOSTimerActive(Player player) {
         return kosTimers.containsKey(player.getUniqueId());
     }
 
-    public static long getKOSTimer(Player player) {
+    public long getKOSTimer(Player player) {
         return kosTimers.get(player.getUniqueId());
     }
 
-    public static List<Player> getPlayersOnKOS() {
+    public List<Player> getPlayersOnKOS() {
         return kosTimers.keySet().stream().map(uuid -> Bukkit.getPlayer(uuid)).collect(Collectors.toList());
     }
 
-    public static List<String> getPlayerUsernamesOnKOS() {
+    public List<String> getPlayerUsernamesOnKOS() {
         return kosTimers.keySet().stream().map(uuid -> Bukkit.getPlayer(uuid).getName()).collect(Collectors.toList());
     }
 }

@@ -6,10 +6,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.guardutils.requests.Requests;
+import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
 import com.flyerzrule.mc.guardutils.utils.Message;
 import com.flyerzrule.mc.guardutils.utils.Utils;
-import com.flyerzrule.mc.guardutils.utils.requests.Requests;
-import com.flyerzrule.mc.guardutils.utils.requests.models.ContrabandType;
 
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -38,7 +38,8 @@ public class BowCommand implements CommandExecutor {
                             player.sendMessage(
                                     "Drop your bow or you will be sent to solitary for breaking the rules!");
 
-                            Requests.addRequest(player, guard, ContrabandType.BOW, null);
+                            Requests requests = Requests.getInstance();
+                            requests.addRequest(player, guard, ContrabandType.BOW, null);
                             return true;
                         } else {
                             TextComponent message = Message.formatMessage(NamedTextColor.RED,

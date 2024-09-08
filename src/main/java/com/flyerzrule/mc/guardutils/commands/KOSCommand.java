@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.utils.KOSTimer;
+import com.flyerzrule.mc.guardutils.kos.KOSTimer;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 import com.flyerzrule.mc.guardutils.utils.time.models.MinSec;
 
@@ -30,9 +30,11 @@ public class KOSCommand implements CommandExecutor {
 
             Player guard = (Player) sender;
 
+            KOSTimer kosTimer = KOSTimer.getInstance();
+
             if (!sender.hasPermission("guardutils.guard")) {
-                if (KOSTimer.isKOSTimerActive(guard)) {
-                    long endTime = KOSTimer.getKOSTimer(guard);
+                if (kosTimer.isKOSTimerActive(guard)) {
+                    long endTime = kosTimer.getKOSTimer(guard);
                     long timeLeft = endTime - System.currentTimeMillis();
                     if (timeLeft > 0) {
                         MinSec minSec = TimeUtils.getMinutesAndSecondsFromMilli(timeLeft);
@@ -64,14 +66,14 @@ public class KOSCommand implements CommandExecutor {
                         int time = Integer.parseInt(args[0]);
 
                         long ticks = time * 60 * 20; // convert minutes to ticks (20 ticks = 1 second)
-                        if (KOSTimer.isKOSTimerActive(player)) {
+                        if (kosTimer.isKOSTimerActive(player)) {
                             TextComponent response = Component.text().color(NamedTextColor.RED)
                                     .content(String.format("%s is already on KOS!", player.getName()))
                                     .build();
                             sender.sendMessage(response);
                             return true;
                         }
-                        KOSTimer.setKOSTimer(player, time);
+                        kosTimer.setKOSTimer(player, time);
                         Component serverMessage = Component.text().color(NamedTextColor.RED)
                                 .content(String.format("%s is KOS for %d minutes!", player.getName(), time))
                                 .build();
@@ -85,10 +87,10 @@ public class KOSCommand implements CommandExecutor {
                         // Start KOS timer
                         GuardUtils.getPlugin().getServer().getScheduler().runTaskLater(GuardUtils.getPlugin(),
                                 () -> {
-                                    if (KOSTimer.isKOSTimerActive(player)) {
+                                    if (kosTimer.isKOSTimerActive(player)) {
                                         GuardUtils.getMyLogger().sendDebug(
                                                 String.format("KOS timer for %s ended.", player.getName()));
-                                        KOSTimer.cancelKOSTimer(player);
+                                        kosTimer.cancelKOSTimer(player);
 
                                         Component message = Component.text().color(NamedTextColor.GREEN)
                                                 .content(String.format("KOS has ended for %s!", player.getName()))
@@ -102,7 +104,7 @@ public class KOSCommand implements CommandExecutor {
                                 }, ticks);
                         return true;
                     } else if (args[0].equalsIgnoreCase("cancel")) {
-                        KOSTimer.cancelKOSTimer(player);
+                        kosTimer.cancelKOSTimer(player);
                         Component serverMessage = Component.text().color(NamedTextColor.GREEN)
                                 .content(String.format("KOS has ended for %s!", player.getName())).build();
                         Bukkit.broadcast(serverMessage);
@@ -112,8 +114,8 @@ public class KOSCommand implements CommandExecutor {
                         player.sendMessage(userMessage);
                         return true;
                     } else if (args[0].equalsIgnoreCase("time")) {
-                        if (KOSTimer.isKOSTimerActive(player)) {
-                            long endTime = KOSTimer.getKOSTimer(player);
+                        if (kosTimer.isKOSTimerActive(player)) {
+                            long endTime = kosTimer.getKOSTimer(player);
                             long timeLeft = endTime - System.currentTimeMillis();
                             if (timeLeft > 0) {
                                 MinSec minSec = TimeUtils.getMinutesAndSecondsFromMilli(timeLeft);

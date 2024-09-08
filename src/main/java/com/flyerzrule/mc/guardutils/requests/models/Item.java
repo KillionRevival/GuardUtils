@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.utils.requests.models;
+package com.flyerzrule.mc.guardutils.requests.models;
 
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectTypeCategory;

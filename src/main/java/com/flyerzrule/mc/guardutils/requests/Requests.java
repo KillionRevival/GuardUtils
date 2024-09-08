@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.utils.requests;
+package com.flyerzrule.mc.guardutils.requests;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,20 +7,31 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.flyerzrule.mc.guardutils.utils.requests.models.Request;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
+import com.flyerzrule.mc.guardutils.requests.models.Item;
+import com.flyerzrule.mc.guardutils.requests.models.Request;
 import com.flyerzrule.mc.guardutils.utils.Utils;
-import com.flyerzrule.mc.guardutils.utils.requests.models.ContrabandType;
-import com.flyerzrule.mc.guardutils.utils.requests.models.Item;
 
 public class Requests {
-    private static Map<UUID, Request> requests = new HashMap<>();
+    private static Requests instance;
 
-    public static void addRequest(Player player, Player guard, ContrabandType type, Item contrabandItem) {
+    private Requests() {
+    }
+
+    public static Requests getInstance() {
+        if (instance == null) {
+            instance = new Requests();
+        }
+        return instance;
+    }
+
+    private Map<UUID, Request> requests = new HashMap<>();
+
+    public void addRequest(Player player, Player guard, ContrabandType type, Item contrabandItem) {
         String contraband;
         switch (type) {
             case SWORD:
@@ -40,8 +51,8 @@ public class Requests {
         }
 
         BukkitTask[] tasks = Utils.startCountdown(player, type, contrabandItem, () -> {
-            if (Requests.isRequested(player)) {
-                Request request = Requests.getRequested(player);
+            if (this.isRequested(player)) {
+                Request request = this.getRequested(player);
 
                 TextComponent playerMessage = Component.text().color(NamedTextColor.RED)
                         .content(String.format("You have failed to drop your %s!", contraband)).build();
@@ -52,7 +63,7 @@ public class Requests {
                         .build();
                 request.getGuard().sendMessage(guardMessage);
 
-                Requests.removeRequest(player);
+                this.removeRequest(player);
             }
         });
 
@@ -60,17 +71,17 @@ public class Requests {
         requests.put(player.getUniqueId(), request);
     }
 
-    public static void removeRequest(Player player) {
+    public void removeRequest(Player player) {
         if (isRequested(player)) {
             requests.remove(player.getUniqueId());
         }
     }
 
-    public static boolean isRequested(Player player) {
+    public boolean isRequested(Player player) {
         return requests.containsKey(player.getUniqueId());
     }
 
-    public static Request getRequested(Player player) {
+    public Request getRequested(Player player) {
         return requests.get(player.getUniqueId());
     }
 

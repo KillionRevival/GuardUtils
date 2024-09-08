@@ -1,7 +1,6 @@
 package com.flyerzrule.mc.guardutils.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +14,10 @@ import org.bukkit.potion.PotionEffectTypeCategory;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.utils.requests.Requests;
-import com.flyerzrule.mc.guardutils.utils.requests.models.ContrabandType;
-import com.flyerzrule.mc.guardutils.utils.requests.models.Item;
-import com.flyerzrule.mc.guardutils.utils.requests.models.Request;
+import com.flyerzrule.mc.guardutils.requests.Requests;
+import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
+import com.flyerzrule.mc.guardutils.requests.models.Item;
+import com.flyerzrule.mc.guardutils.requests.models.Request;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -51,7 +50,8 @@ public class Utils {
         BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(GuardUtils.getPlugin(), () -> {
             timer.set(timer.get() - 1);
 
-            Request request = Requests.getRequested(player);
+            Requests requests = Requests.getInstance();
+            Request request = requests.getRequested(player);
 
             TextComponent playerMessage = Component.text().color(NamedTextColor.GOLD)
                     .content(String.format("You have %d seconds to drop your %s!", timer.get(), contraband)).build();

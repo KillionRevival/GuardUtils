@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.utils.requests.models;
+package com.flyerzrule.mc.guardutils.requests.models;
 
 public enum ContrabandType {
     SWORD,

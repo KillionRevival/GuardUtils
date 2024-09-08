@@ -9,8 +9,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.flyerzrule.mc.guardutils.kos.KOSTimer;
 import com.flyerzrule.mc.guardutils.utils.ChatUtils;
-import com.flyerzrule.mc.guardutils.utils.KOSTimer;
 
 public class KOSTabComplete implements TabCompleter {
     @Override
@@ -23,6 +23,8 @@ public class KOSTabComplete implements TabCompleter {
 
         Player player = (Player) sender;
 
+        KOSTimer kosTimer = KOSTimer.getInstance();
+
         if (sender.hasPermission("guardutils.guard")) {
             if (args.length == 1) {
                 suggestions.add("5");
@@ -33,11 +35,11 @@ public class KOSTabComplete implements TabCompleter {
                 suggestions = ChatUtils.filterListByPrefix(suggestions, args[0]);
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("time") || args[0].equalsIgnoreCase("cancel")) {
-                    List<String> KOSUsernames = KOSTimer.getPlayerUsernamesOnKOS();
+                    List<String> KOSUsernames = kosTimer.getPlayerUsernamesOnKOS();
                     suggestions = ChatUtils.filterListByPrefix(KOSUsernames, args[1]);
                 } else if (args[0].equalsIgnoreCase("5") || args[0].equalsIgnoreCase("10")) {
                     List<String> onlinePlayers = ChatUtils.getOnlinePlayers(player, args[1]);
-                    List<String> KOSUsernames = KOSTimer.getPlayerUsernamesOnKOS();
+                    List<String> KOSUsernames = kosTimer.getPlayerUsernamesOnKOS();
                     suggestions = onlinePlayers.stream().filter(name -> !KOSUsernames.contains(name)).toList();
                 }
             }

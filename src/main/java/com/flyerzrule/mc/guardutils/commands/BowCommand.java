@@ -59,6 +59,6 @@ public class BowCommand implements CommandExecutor {
                 return true;
             }
         }
-        return false;
+        return true;
     }
 }

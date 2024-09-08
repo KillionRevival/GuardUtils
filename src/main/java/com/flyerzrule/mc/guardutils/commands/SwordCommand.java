@@ -59,6 +59,6 @@ public class SwordCommand implements CommandExecutor {
                 return true;
             }
         }
-        return false;
+        return true;
     }
 }

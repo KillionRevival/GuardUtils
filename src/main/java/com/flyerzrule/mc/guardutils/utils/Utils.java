@@ -1,6 +1,7 @@
 package com.flyerzrule.mc.guardutils.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class Utils {
 
         for (ItemStack playerItem : player.getInventory().getContents()) {
             for (Item contrabandItem : Utils.getContrandTypeItems(type)) {
-                if (playerItem.getType() == contrabandItem.getMaterial()) {
+                if (playerItem != null && playerItem.getType() == contrabandItem.getMaterial()) {
                     return true;
                 }
             }
@@ -87,7 +88,7 @@ public class Utils {
 
     public static boolean hasOtherContrabandItemInInventory(Player player, Item contrabandItem) {
         for (ItemStack playerItem : player.getInventory().getContents()) {
-            if (playerItem.getType() == contrabandItem.getMaterial()) {
+            if (playerItem != null && playerItem.getType() == contrabandItem.getMaterial()) {
                 if (contrabandItem.isPotion()) {
                     PotionMeta meta = (PotionMeta) playerItem.getItemMeta();
                     for (PotionEffect effect : meta.getCustomEffects()) {

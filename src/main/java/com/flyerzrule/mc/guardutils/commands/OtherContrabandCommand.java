@@ -59,7 +59,8 @@ public class OtherContrabandCommand implements CommandExecutor {
                             return true;
                         } else {
                             TextComponent message = Message.formatMessage(NamedTextColor.RED,
-                                    String.format("%s does not have a sword in their inventory!", player.getName()));
+                                    String.format("%s does not have a %s in their inventory!", player.getName(),
+                                            contrabandItem.getName()));
                             guard.sendMessage(message);
                             return true;
                         }
@@ -76,6 +77,6 @@ public class OtherContrabandCommand implements CommandExecutor {
                 return true;
             }
         }
-        return false;
+        return true;
     }
 }

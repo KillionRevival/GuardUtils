@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 public class KOSTimer {
     private static KOSTimer instance;
 
@@ -33,6 +36,14 @@ public class KOSTimer {
 
     public void cancelKOSTimer(Player player) {
         if (isKOSTimerActive(player)) {
+            Component serverMessage = Component.text().color(NamedTextColor.GREEN)
+                    .content(String.format("KOS has ended for %s!", player.getName())).build();
+            Bukkit.broadcast(serverMessage);
+
+            Component userMessage = Component.text().color(NamedTextColor.GOLD)
+                    .content("Your KOS timer has ended!").build();
+            player.sendMessage(userMessage);
+
             kosTimers.remove(player.getUniqueId());
         }
     }

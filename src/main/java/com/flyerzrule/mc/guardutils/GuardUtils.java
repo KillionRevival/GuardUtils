@@ -12,6 +12,7 @@ import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabCompl
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
+import com.flyerzrule.mc.guardutils.listeners.PlayerDeathListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
 
 import co.killionrevival.killioncommons.KillionUtilities;
@@ -76,6 +77,7 @@ public class GuardUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DroppedItemListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerHitListener(), this);
         getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
         GuardUtils.logger.sendSuccess("Listeners have been registered.");
     }

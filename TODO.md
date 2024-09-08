@@ -1,7 +1,3 @@
-- Add logic for dropping sword
-- Add logic for dropping bow
-- Add logic for dropping other contraband
-- Add logic for ending KOS if player dies
 - Add logic for not spamming guard's chat with hit messages
 - Finish up the invis logic
 - Add something to shown invis players to show that they are invisible

@@ -105,13 +105,6 @@ public class KOSCommand implements CommandExecutor {
                         return true;
                     } else if (args[0].equalsIgnoreCase("cancel")) {
                         kosTimer.cancelKOSTimer(player);
-                        Component serverMessage = Component.text().color(NamedTextColor.GREEN)
-                                .content(String.format("KOS has ended for %s!", player.getName())).build();
-                        Bukkit.broadcast(serverMessage);
-
-                        Component userMessage = Component.text().color(NamedTextColor.GOLD)
-                                .content("Your KOS timer has ended!").build();
-                        player.sendMessage(userMessage);
                         return true;
                     } else if (args[0].equalsIgnoreCase("time")) {
                         if (kosTimer.isKOSTimerActive(player)) {

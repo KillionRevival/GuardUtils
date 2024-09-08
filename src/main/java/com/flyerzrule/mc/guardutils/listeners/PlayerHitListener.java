@@ -2,6 +2,7 @@ package com.flyerzrule.mc.guardutils.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.flyerzrule.mc.guardutils.utils.Message;
@@ -9,7 +10,7 @@ import com.flyerzrule.mc.guardutils.utils.Message;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class PlayerHitListener {
+public class PlayerHitListener implements Listener {
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event) {
         // Make sure both entities are players

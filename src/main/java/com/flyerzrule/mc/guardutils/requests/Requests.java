@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
 import com.flyerzrule.mc.guardutils.requests.models.Item;
 import com.flyerzrule.mc.guardutils.requests.models.Request;
@@ -83,6 +84,20 @@ public class Requests {
 
     public Request getRequested(Player player) {
         return requests.get(player.getUniqueId());
+    }
+
+    public void cancelRequest(Player player) {
+        if (isRequested(player)) {
+            Request request = this.getRequested(player);
+
+            BukkitTask countTask = request.getCountTask();
+            countTask.cancel();
+            BukkitTask cancelTask = request.getCancelTask();
+            cancelTask.cancel();
+
+            GuardUtils.getMyLogger().sendDebug(String.format("Cancelling request for %s.", player.getName()));
+            this.removeRequest(player);
+        }
     }
 
 }

@@ -35,8 +35,8 @@ public class SwordCommand implements CommandExecutor {
 
                         if (Utils.hasContrabrandInInventory(player, ContrabandType.SWORD)) {
 
-                            player.sendMessage(
-                                    "Drop your sword or you will be sent to solitary for breaking the rules!");
+                            player.sendMessage(Message.formatMessage(NamedTextColor.DARK_PURPLE,
+                                    "Drop your sword or you will be sent to solitary for breaking the rules!"));
 
                             Requests requests = Requests.getInstance();
                             requests.addRequest(player, guard, ContrabandType.SWORD, null);

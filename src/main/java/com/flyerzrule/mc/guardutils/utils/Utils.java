@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffectTypeCategory;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -78,7 +79,7 @@ public class Utils {
 
         for (ItemStack playerItem : player.getInventory().getContents()) {
             for (Item contrabandItem : Utils.getContrandTypeItems(type)) {
-                if (playerItem != null && playerItem.getType() == contrabandItem.getMaterial()) {
+                if (playerItem != null && playerItem.getType().equals(contrabandItem.getMaterial())) {
                     return true;
                 }
             }
@@ -88,16 +89,19 @@ public class Utils {
 
     public static boolean hasOtherContrabandItemInInventory(Player player, Item contrabandItem) {
         for (ItemStack playerItem : player.getInventory().getContents()) {
-            if (playerItem != null && playerItem.getType() == contrabandItem.getMaterial()) {
+            if (playerItem != null && playerItem.getType().equals(contrabandItem.getMaterial())) {
                 if (contrabandItem.isPotion()) {
-                    PotionMeta meta = (PotionMeta) playerItem.getItemMeta();
-                    for (PotionEffect effect : meta.getCustomEffects()) {
-                        if (effect.getType().getCategory() == contrabandItem.getPotionEffectTypeCategory()) {
-                            return true;
+                    if (playerItem.getItemMeta() instanceof PotionMeta) {
+                        PotionMeta meta = (PotionMeta) playerItem.getItemMeta();
+                        for (PotionEffect effect : meta.getBasePotionType().getPotionEffects()) {
+                            PotionEffectType effectType = effect.getType();
+                            if (effectType.getCategory() == contrabandItem.getPotionEffectTypeCategory()) {
+                                return true;
+                            }
                         }
                     }
                 } else {
-                    if (playerItem.getType() == contrabandItem.getMaterial()) {
+                    if (playerItem.getType().equals(contrabandItem.getMaterial())) {
                         return true;
                     }
                 }
@@ -130,7 +134,8 @@ public class Utils {
                 contraband.add(new Item(Material.LAVA_BUCKET));
                 contraband.add(new Item(Material.SHIELD));
                 contraband.add(new Item(Material.TRIDENT));
-                contraband.add(new Item(PotionEffectTypeCategory.HARMFUL));
+                contraband.add(new Item(Material.SPLASH_POTION, PotionEffectTypeCategory.HARMFUL));
+                contraband.add(new Item(Material.POTION, PotionEffectTypeCategory.HARMFUL));
                 break;
         }
         return contraband;

@@ -20,9 +20,9 @@ public class Item {
         this.name = material.name();
     }
 
-    public Item(PotionEffectTypeCategory potionEffectTypeCategory) {
+    public Item(Material material, PotionEffectTypeCategory potionEffectTypeCategory) {
         this.isPotion = true;
-        this.material = Material.POTION;
+        this.material = material;
         this.potionEffectTypeCategory = potionEffectTypeCategory;
         this.name = "POTION." + potionEffectTypeCategory.name();
     }

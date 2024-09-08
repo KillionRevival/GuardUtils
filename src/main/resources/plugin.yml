@@ -16,7 +16,7 @@ commands:
     usage: /<command> [username]
     permission: guardutils.guard
     permission-message: You do not have permission to use this command.
-  contraband:
+  cb:
     description: Requests that a player drops their other contraband
     usage: /<command> [username] [contrabandItem]
     permission: guardutils.guard

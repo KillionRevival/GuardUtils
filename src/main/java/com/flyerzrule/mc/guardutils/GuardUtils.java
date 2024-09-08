@@ -10,6 +10,9 @@ import com.flyerzrule.mc.guardutils.commands.SwordCommand;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.KOSTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
+import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
+import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
+import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
@@ -29,6 +32,7 @@ public class GuardUtils extends JavaPlugin {
 
         registerCommands();
         registerTabComplete();
+        registerListeners();
 
         logger.sendSuccess(this.pluginName + " has been enabled.");
     }
@@ -49,8 +53,10 @@ public class GuardUtils extends JavaPlugin {
     private void registerCommands() {
         getCommand("sword").setExecutor(new SwordCommand());
         getCommand("bow").setExecutor(new BowCommand());
-        getCommand("contraband").setExecutor(new OtherContrabandCommand());
+        getCommand("cb").setExecutor(new OtherContrabandCommand());
         getCommand("kos").setExecutor(new KOSCommand());
+
+        GuardUtils.logger.sendSuccess("Commands have been registered.");
     }
 
     private void registerTabComplete() {
@@ -60,7 +66,17 @@ public class GuardUtils extends JavaPlugin {
 
         getCommand("sword").setTabCompleter(playerTabComplete);
         getCommand("bow").setTabCompleter(playerTabComplete);
-        getCommand("contraband").setTabCompleter(otherContrabandTabComplete);
+        getCommand("cb").setTabCompleter(otherContrabandTabComplete);
         getCommand("kos").setTabCompleter(kosTabComplete);
+
+        GuardUtils.logger.sendSuccess("Tab completers have been registered.");
+    }
+
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new DroppedItemListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerHitListener(), this);
+        getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
+
+        GuardUtils.logger.sendSuccess("Listeners have been registered.");
     }
 }

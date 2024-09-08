@@ -35,8 +35,8 @@ public class BowCommand implements CommandExecutor {
 
                         if (Utils.hasContrabrandInInventory(player, ContrabandType.BOW)) {
 
-                            player.sendMessage(
-                                    "Drop your bow or you will be sent to solitary for breaking the rules!");
+                            player.sendMessage(Message.formatMessage(NamedTextColor.DARK_PURPLE,
+                                    "Drop your bow or you will be sent to solitary for breaking the rules!"));
 
                             Requests requests = Requests.getInstance();
                             requests.addRequest(player, guard, ContrabandType.BOW, null);

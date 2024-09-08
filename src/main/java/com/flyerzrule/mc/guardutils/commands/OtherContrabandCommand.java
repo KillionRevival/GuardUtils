@@ -25,7 +25,7 @@ public class OtherContrabandCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("contraband")) {
+        if (cmd.getName().equalsIgnoreCase("cb")) {
             if (sender instanceof Player) {
                 Player guard = (Player) sender;
                 if (guard.hasPermission("guardutils.guard")) {
@@ -49,7 +49,7 @@ public class OtherContrabandCommand implements CommandExecutor {
                         }
 
                         if (Utils.hasOtherContrabandItemInInventory(player, contrabandItem)) {
-                            TextComponent message = Message.formatMessage(NamedTextColor.GOLD,
+                            TextComponent message = Message.formatMessage(NamedTextColor.DARK_PURPLE,
                                     String.format(
                                             "Drop your %s or you will be sent to solitary for breaking the rules!",
                                             contrabandItem.getName()));

@@ -6,8 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.flyerzrule.mc.guardutils.commands.BowCommand;
 import com.flyerzrule.mc.guardutils.commands.KOSCommand;
 import com.flyerzrule.mc.guardutils.commands.OtherContrabandCommand;
+import com.flyerzrule.mc.guardutils.commands.ScoreboardToggleCommand;
 import com.flyerzrule.mc.guardutils.commands.SwordCommand;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.KOSTabComplete;
+import com.flyerzrule.mc.guardutils.commands.tabcomplete.OnOffTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
@@ -18,11 +20,15 @@ import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+
 public class GuardUtils extends JavaPlugin {
     private final String pluginName = "GuardUtils";
     private static Plugin plugin;
     private static KillionUtilities killionUtilities;
     private static ConsoleUtil logger;
+    private static LuckPerms luckperms;
 
     @Override
     public void onEnable() {
@@ -30,6 +36,8 @@ public class GuardUtils extends JavaPlugin {
         plugin = this;
         killionUtilities = new KillionUtilities(this);
         logger = killionUtilities.getConsoleUtil();
+
+        luckperms = LuckPermsProvider.get();
 
         registerCommands();
         registerTabComplete();
@@ -51,11 +59,16 @@ public class GuardUtils extends JavaPlugin {
         return logger;
     }
 
+    public static LuckPerms getLuckperms() {
+        return luckperms;
+    }
+
     private void registerCommands() {
         getCommand("sword").setExecutor(new SwordCommand());
         getCommand("bow").setExecutor(new BowCommand());
         getCommand("cb").setExecutor(new OtherContrabandCommand());
         getCommand("kos").setExecutor(new KOSCommand());
+        getCommand("guardsb").setExecutor(new ScoreboardToggleCommand());
 
         GuardUtils.logger.sendSuccess("Commands have been registered.");
     }
@@ -64,11 +77,13 @@ public class GuardUtils extends JavaPlugin {
         PlayerTabComplete playerTabComplete = new PlayerTabComplete();
         KOSTabComplete kosTabComplete = new KOSTabComplete();
         OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
+        OnOffTabComplete onOffTabComplete = new OnOffTabComplete();
 
         getCommand("sword").setTabCompleter(playerTabComplete);
         getCommand("bow").setTabCompleter(playerTabComplete);
         getCommand("cb").setTabCompleter(otherContrabandTabComplete);
         getCommand("kos").setTabCompleter(kosTabComplete);
+        getCommand("guardsb").setTabCompleter(onOffTabComplete);
 
         GuardUtils.logger.sendSuccess("Tab completers have been registered.");
     }

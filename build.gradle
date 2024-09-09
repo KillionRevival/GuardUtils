@@ -34,6 +34,7 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
     compileOnly "co.killionrevival:killioncommons:3.0.4-SNAPSHOT"
+    compileOnly "net.luckperms:api:5.4"
 
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'

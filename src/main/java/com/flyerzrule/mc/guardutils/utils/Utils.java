@@ -45,7 +45,7 @@ public class Utils {
                 break;
         }
 
-        int countdown = GuardUtils.getPlugin().getConfig().getInt("countdown-time");
+        int countdown = GuardUtils.getPlugin().getConfig().getInt("countdown-time", 10);
         AtomicInteger timer = new AtomicInteger(countdown + 1);
 
         BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(GuardUtils.getPlugin(), () -> {

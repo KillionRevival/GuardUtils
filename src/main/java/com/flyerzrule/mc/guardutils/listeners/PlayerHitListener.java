@@ -5,10 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import com.flyerzrule.mc.guardutils.utils.Message;
-
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
+import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.flyerzrule.mc.guardutils.scoreboard.GuardScoreboard;
 
 public class PlayerHitListener implements Listener {
     @EventHandler
@@ -21,11 +19,10 @@ public class PlayerHitListener implements Listener {
         Player damagedPlayer = (Player) event.getEntity();
         Player attackingPlayer = (Player) event.getDamager();
 
-        if (damagedPlayer.hasPermission("guardutils.guard")) {
+        GuardUtils.getMyLogger().sendDebug(String.format("%s has hit %s!", attackingPlayer.getName(),
+                damagedPlayer.getName()));
 
-            TextComponent message = Message.formatMessage(NamedTextColor.DARK_PURPLE,
-                    String.format("%s has hit you!", attackingPlayer.getName()));
-            damagedPlayer.sendMessage(message);
-        }
+        GuardScoreboard guardScoreboard = GuardScoreboard.getInstance();
+        guardScoreboard.addAttack(damagedPlayer, attackingPlayer);
     }
 }

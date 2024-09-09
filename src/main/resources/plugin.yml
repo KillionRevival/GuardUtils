@@ -4,7 +4,7 @@ main: com.flyerzrule.mc.guardutils.GuardUtils
 api-version: ${mcVersion}
 description: Plugin for making a guard's experience better 
 author: [flyerzrule]
-depend: [KillionCommons]
+depend: [KillionCommons, LuckPerms]
 commands:
   sword:
     description: Requests that a player drops their sword
@@ -24,12 +24,21 @@ commands:
   kos:
     description: Places a player on KOS for the specified amount of time
     usage: /<command> <5|10|cancel|time> <username>
+  guardsb:
+    description: Toggles the guard scoreboard
+    usage: /<command> [on|off]
+    permission: guardutils.guard
+    permission-message: You do not have permission to use this command.
 permissions:
   guardutils.guard:
     description: Gives access to all guard GuardUtils commands
+    default: false
   guardutils.player:
     description: Gives access to all player GuardUtils commands
     default: true
   guardutils.admin:
     description: Gives access to all admin GuardUtils commands
     default: op
+  guardutils.guard.scoreboard:
+    description: Gives access to the guard scoreboard
+    default: false

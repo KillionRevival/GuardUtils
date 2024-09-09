@@ -122,7 +122,7 @@ public class GuardScoreboard {
 
     private void hideGuardScoreboard(Player guard) {
         if (guard.getScoreboard() != null) {
-            guard.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            guard.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
     }
 }

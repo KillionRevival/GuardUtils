@@ -35,4 +35,5 @@ public class InvisPlayers {
     public Set<Player> getAllInvisiblePlayers() {
         return invisiblePlayers;
     }
+
 }

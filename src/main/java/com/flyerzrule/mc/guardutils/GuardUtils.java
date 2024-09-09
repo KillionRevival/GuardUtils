@@ -12,6 +12,7 @@ import com.flyerzrule.mc.guardutils.commands.tabcomplete.KOSTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.OnOffTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
+import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerDeathListener;
@@ -42,6 +43,8 @@ public class GuardUtils extends JavaPlugin {
         registerCommands();
         registerTabComplete();
         registerListeners();
+
+        InvisPlayers.getInstance();
 
         logger.sendSuccess(this.pluginName + " has been enabled.");
     }

@@ -1,6 +1,2 @@
-- Finish up the invis logic
-- Add something to shown invis players to show that they are invisible
-- Add something to the player's tag above their head to show that they are KOS (Need to figure out how to do this, already spent a few hours on this)
 - Make the guard armor look like chainmail
 - Allow certain items to be dropped when a guard is killed
-- When guards are invisible, make them visible to other players. (Make this admin toggleable)

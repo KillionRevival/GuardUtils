@@ -17,6 +17,8 @@ public class ScoreboardToggleCommand implements CommandExecutor {
     public ScoreboardToggleCommand() {
     }
 
+    private final String permission = "guardutils.guard.scoreboard";
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("guardsb")) {
@@ -24,7 +26,7 @@ public class ScoreboardToggleCommand implements CommandExecutor {
                 Player player = (Player) sender;
                 if (player.hasPermission("guardutils.guard")) {
                     if (args.length == 1) {
-                        boolean hasPermission = player.hasPermission("guardutils.guard.scoreboard");
+                        boolean hasPermission = player.hasPermission(permission);
                         if (args[0].equalsIgnoreCase("on")) {
                             if (!hasPermission) {
                                 enablePermission(player);
@@ -65,7 +67,6 @@ public class ScoreboardToggleCommand implements CommandExecutor {
 
     private void disablePermission(Player player) {
         LuckPerms luckPerms = GuardUtils.getLuckperms();
-        String permission = "guardutils.guard.scoreboard";
         luckPerms.getUserManager().loadUser(player.getUniqueId()).thenAccept(user -> {
             Node node = Node.builder(permission).build();
             if (user.data().contains(node, NodeEqualityPredicate.ONLY_KEY).asBoolean()) {
@@ -84,7 +85,6 @@ public class ScoreboardToggleCommand implements CommandExecutor {
 
     private void enablePermission(Player player) {
         LuckPerms luckPerms = GuardUtils.getLuckperms();
-        String permission = "guardutils.guard.scoreboard";
         luckPerms.getUserManager().loadUser(player.getUniqueId()).thenAccept(user -> {
             Node node = Node.builder(permission).build();
             if (user.data().contains(node, NodeEqualityPredicate.ONLY_KEY).asBoolean()) {

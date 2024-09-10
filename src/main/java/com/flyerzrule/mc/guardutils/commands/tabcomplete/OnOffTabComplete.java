@@ -9,6 +9,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 
 public class OnOffTabComplete implements TabCompleter {
     @Override
@@ -25,6 +26,19 @@ public class OnOffTabComplete implements TabCompleter {
             if (sender.hasPermission("guardutils.guard")) {
                 if (args.length == 1) {
                     if (player.hasPermission("guardutils.guard.scoreboard")) {
+                        suggestions.add("off");
+                    } else {
+                        suggestions.add("on");
+                    }
+                }
+            }
+        }
+
+        if (command.getName().equalsIgnoreCase("guardsinvistag")) {
+            InvisPlayers invisPlayers = InvisPlayers.getInstance();
+            if (sender.hasPermission("guardutils.admin")) {
+                if (args.length == 1) {
+                    if (invisPlayers.getshowGuardTag()) {
                         suggestions.add("off");
                     } else {
                         suggestions.add("on");

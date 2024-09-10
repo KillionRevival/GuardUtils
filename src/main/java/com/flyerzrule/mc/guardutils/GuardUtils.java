@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flyerzrule.mc.guardutils.armorstands.ArmorStandManager;
 import com.flyerzrule.mc.guardutils.commands.BowCommand;
+import com.flyerzrule.mc.guardutils.commands.GuardInvisTagCommand;
 import com.flyerzrule.mc.guardutils.commands.KOSCommand;
 import com.flyerzrule.mc.guardutils.commands.OtherContrabandCommand;
 import com.flyerzrule.mc.guardutils.commands.ScoreboardToggleCommand;
@@ -75,6 +76,7 @@ public class GuardUtils extends JavaPlugin {
         getCommand("cb").setExecutor(new OtherContrabandCommand());
         getCommand("kos").setExecutor(new KOSCommand());
         getCommand("guardsb").setExecutor(new ScoreboardToggleCommand());
+        getCommand("guardsinvistag").setExecutor(new GuardInvisTagCommand());
 
         GuardUtils.logger.sendSuccess("Commands have been registered.");
     }
@@ -90,6 +92,7 @@ public class GuardUtils extends JavaPlugin {
         getCommand("cb").setTabCompleter(otherContrabandTabComplete);
         getCommand("kos").setTabCompleter(kosTabComplete);
         getCommand("guardsb").setTabCompleter(onOffTabComplete);
+        getCommand("guardsinvistag").setTabCompleter(onOffTabComplete);
 
         GuardUtils.logger.sendSuccess("Tab completers have been registered.");
     }

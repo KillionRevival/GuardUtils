@@ -84,19 +84,32 @@ public class ArmorStandFollower {
     private void showAndHideArmorStand() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (this.player.equals(player)) {
+                this.hideArmorStand(player);
                 continue;
             }
 
             if (player.hasPermission("guardutils.guard")) {
-                GuardUtils.getMyLogger().sendDebug(
-                        String.format("Showing %s's armor stand for %s.", this.player.getName(), player.getName()));
-                player.showEntity(GuardUtils.getPlugin(), this.armorStand);
+                this.showArmorStand(player);
             } else {
-                GuardUtils.getMyLogger().sendDebug(
-                        String.format("Hiding %s's armor stand for %s.", this.player.getName(), player.getName()));
-                player.hideEntity(GuardUtils.getPlugin(), this.armorStand);
+                if (this.player.hasPermission("guardutils.guard")) {
+                    this.showArmorStand(player);
+                } else {
+                    this.hideArmorStand(player);
+                }
             }
         }
+    }
+
+    private void showArmorStand(Player player) {
+        GuardUtils.getMyLogger().sendDebug(
+                String.format("Showing %s's armor stand for %s.", this.player.getName(), player.getName()));
+        player.showEntity(GuardUtils.getPlugin(), this.armorStand);
+    }
+
+    private void hideArmorStand(Player player) {
+        GuardUtils.getMyLogger().sendDebug(
+                String.format("Hiding %s's armor stand for %s.", this.player.getName(), player.getName()));
+        player.hideEntity(GuardUtils.getPlugin(), this.armorStand);
     }
 
 }

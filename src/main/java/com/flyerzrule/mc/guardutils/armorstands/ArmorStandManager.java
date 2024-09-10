@@ -3,8 +3,6 @@ package com.flyerzrule.mc.guardutils.armorstands;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.List;
-import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,6 +12,7 @@ import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.armorstands.models.ArmorStandFollower;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.kos.KOSTimer;
+import com.flyerzrule.mc.guardutils.utils.Message;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -79,17 +78,19 @@ public class ArmorStandManager {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (!player.hasPermission("guardutils.guard")) {
                         if (kosTimer.isKOSTimerActive(player)) {
-                            List<Component> tagList = new ArrayList<>();
-                            tagList.add(Component.text().color(NamedTextColor.RED).content("KOS").build());
-                            // if (invisPlayers.isPlayerInvisible(player)) {
-                            //     tagList.add(Component.text().color(NamedTextColor.AQUA).content("INVIS").build());
-                            // }
-                            Component tag = Component.text().append(tagList).build();
+                            Component tag = Message.formatMessage(NamedTextColor.RED, "KOS");
                             armorStandManager.addArmorStand(player, tag);
                         } else {
                             armorStandManager.removeArmorStand(player);
                         }
 
+                    } else {
+                        if (invisPlayers.isPlayerInvisible(player) && invisPlayers.getshowGuardTag()) {
+                            Component tag = Message.formatMessage(NamedTextColor.GOLD, "GUARD");
+                            armorStandManager.addArmorStand(player, tag);
+                        } else {
+                            armorStandManager.removeArmorStand(player);
+                        }
                     }
 
                 }

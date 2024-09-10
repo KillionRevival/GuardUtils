@@ -16,6 +16,7 @@ import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabCompl
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
+import com.flyerzrule.mc.guardutils.listeners.GuardArmorListener;
 import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerDeathListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
@@ -26,12 +27,16 @@ import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
 public class GuardUtils extends JavaPlugin {
     private final String pluginName = "GuardUtils";
     private static Plugin plugin;
     private static KillionUtilities killionUtilities;
     private static ConsoleUtil logger;
     private static LuckPerms luckperms;
+    private static ProtocolManager protocolManager;
 
     @Override
     public void onEnable() {
@@ -41,6 +46,8 @@ public class GuardUtils extends JavaPlugin {
         logger = killionUtilities.getConsoleUtil();
 
         luckperms = LuckPermsProvider.get();
+
+        protocolManager = ProtocolLibrary.getProtocolManager();
 
         registerCommands();
         registerTabComplete();
@@ -68,6 +75,10 @@ public class GuardUtils extends JavaPlugin {
 
     public static LuckPerms getLuckperms() {
         return luckperms;
+    }
+
+    public static ProtocolManager getProtocolManager() {
+        return protocolManager;
     }
 
     private void registerCommands() {
@@ -102,6 +113,8 @@ public class GuardUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerHitListener(), this);
         getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+
+        protocolManager.addPacketListener(new GuardArmorListener());
 
         GuardUtils.logger.sendSuccess("Listeners have been registered.");
     }

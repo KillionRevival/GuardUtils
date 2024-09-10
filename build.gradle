@@ -22,6 +22,9 @@ repositories {
     maven { 
         url 'https://jitpack.io' 
     }
+    maven { 
+        url "https://repo.dmulloy2.net/repository/public/"
+    }
     maven {
         url "https://maven.pkg.github.com/KillionRevival/KillionCommons"
         credentials {
@@ -35,6 +38,8 @@ dependencies {
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
     compileOnly "co.killionrevival:killioncommons:3.0.4-SNAPSHOT"
     compileOnly "net.luckperms:api:5.4"
+
+    compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'

@@ -4,7 +4,7 @@ main: com.flyerzrule.mc.guardutils.GuardUtils
 api-version: ${mcVersion}
 description: Plugin for making a guard's experience better 
 author: [flyerzrule]
-depend: [KillionCommons, LuckPerms]
+depend: [KillionCommons, LuckPerms, ProtocolLib]
 commands:
   sword:
     description: Requests that a player drops their sword

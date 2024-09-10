@@ -48,12 +48,13 @@ public class GuardScoreboard {
             @Override
             public void run() {
                 for (Player guard : Bukkit.getOnlinePlayers()) {
+                    GuardScoreboard guardScoreboard = GuardScoreboard.getInstance();
                     if (guardAttackData.containsKey(guard.getUniqueId())) {
                         if (guard.hasPermission("guardutils.guard.scoreboard")) {
-                            removeOldAttacks(guard);
-                            updateGuardScoreboard(guard);
+                            guardScoreboard.removeOldAttacks(guard);
+                            guardScoreboard.updateGuardScoreboard(guard);
                         } else {
-                            hideGuardScoreboard(guard);
+                            guardScoreboard.hideGuardScoreboard(guard);
                         }
                     }
                 }

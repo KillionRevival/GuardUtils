@@ -91,11 +91,6 @@ public class KOSCommand implements CommandExecutor {
                                         GuardUtils.getMyLogger().sendDebug(
                                                 String.format("KOS timer for %s ended.", player.getName()));
                                         kosTimer.cancelKOSTimer(player);
-
-                                        Component message = Component.text().color(NamedTextColor.GREEN)
-                                                .content(String.format("KOS has ended for %s!", player.getName()))
-                                                .build();
-                                        Bukkit.broadcast(message);
                                     } else {
                                         GuardUtils.getMyLogger().sendDebug(String.format(
                                                 "KOS timer for %s ended but the KOS timer was not active. Most likely the timer was cancelled.",

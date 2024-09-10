@@ -3,6 +3,7 @@ package com.flyerzrule.mc.guardutils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.flyerzrule.mc.guardutils.armorstands.ArmorStandManager;
 import com.flyerzrule.mc.guardutils.commands.BowCommand;
 import com.flyerzrule.mc.guardutils.commands.KOSCommand;
 import com.flyerzrule.mc.guardutils.commands.OtherContrabandCommand;
@@ -45,12 +46,14 @@ public class GuardUtils extends JavaPlugin {
         registerListeners();
 
         InvisPlayers.getInstance();
+        ArmorStandManager.getInstance().createArmorStandTask();
 
         logger.sendSuccess(this.pluginName + " has been enabled.");
     }
 
     @Override
     public void onDisable() {
+        ArmorStandManager.getInstance().removeAllArmorStands();
         logger.sendSuccess(this.pluginName + " has been disabled.");
     }
 

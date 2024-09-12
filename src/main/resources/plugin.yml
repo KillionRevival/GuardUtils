@@ -34,6 +34,8 @@ commands:
     usage: /<command> [on|off]
     permission: guardutils.admin
     permission-message: You do not have permission to use this command.
+  guard:
+    description: Start and stop a guard shift
 permissions:
   guardutils.guard:
     description: Gives access to all guard GuardUtils commands

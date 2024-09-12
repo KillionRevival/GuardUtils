@@ -1,2 +1,3 @@
 - Make the guard armor look like chainmail
 - Allow certain items to be dropped when a guard is killed
+- Add commands for switching between a guard and a player

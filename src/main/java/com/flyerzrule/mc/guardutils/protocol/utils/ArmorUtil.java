@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 
 public class ArmorUtil {
-    public static boolean isDiamondArmor(Material material) {
+    public static boolean isGuardArmor(Material material) {
         return material == Material.DIAMOND_HELMET ||
                 material == Material.DIAMOND_CHESTPLATE ||
                 material == Material.DIAMOND_LEGGINGS ||

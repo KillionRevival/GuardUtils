@@ -7,13 +7,13 @@ import org.bukkit.craftbukkit.inventory.CraftMetaArmor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerSetSlot;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.protocol.utils.ArmorUtil;
-import com.flyerzrule.mc.guardutils.protocol.wrappers.WrapperPlayServerSetSlot;
 
 public class SetSlotListener extends PacketAdapter {
     public SetSlotListener() {
@@ -28,12 +28,12 @@ public class SetSlotListener extends PacketAdapter {
 
         WrapperPlayServerSetSlot wrapper = new WrapperPlayServerSetSlot(packet);
 
-        ItemStack itemStack = wrapper.getSlotData();
+        ItemStack itemStack = wrapper.getItemStack();
         int slot = wrapper.getSlot();
 
         ItemMeta meta = itemStack.getItemMeta();
 
-        if (itemStack != null && ArmorUtil.isDiamondArmor(itemStack.getType()) && ArmorUtil.isArmorSlot(slot)
+        if (itemStack != null && ArmorUtil.isGuardArmor(itemStack.getType()) && ArmorUtil.isArmorSlot(slot)
                 && meta != null && meta instanceof CraftMetaArmor) {
 
             CraftMetaArmor armorMeta = (CraftMetaArmor) meta;
@@ -53,8 +53,14 @@ public class SetSlotListener extends PacketAdapter {
             }
             chainmailItem.setItemMeta(chainmailMeta);
 
-            wrapper.setSlotData(chainmailItem);
+            wrapper.setItemStack(chainmailItem);
+            GuardUtils.getMyLogger().sendDebug("was set");
+        } else {
+            GuardUtils.getMyLogger().sendDebug("NOT SET");
+            if (itemStack != null) {
+                GuardUtils.getMyLogger().sendDebug(itemStack.getType().name());
+                GuardUtils.getMyLogger().sendDebug("slot: " + slot);
+            }
         }
-
     }
 }

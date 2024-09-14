@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id("io.papermc.paperweight.userdev") version "1.7.1"
 }
 
 group = 'com.flyerzrule.mc.guardutils'
@@ -35,11 +35,13 @@ repositories {
 }
 
 dependencies {
+    paperweight.paperDevBundle(paperVersion)
+
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
-    compileOnly "co.killionrevival:killioncommons:3.0.4-SNAPSHOT"
+    compileOnly "co.killionrevival:killioncommons:3.0.7-SNAPSHOT"
     compileOnly "net.luckperms:api:5.4"
 
-    compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:5.3.0-SNAPSHOT'
 
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
@@ -48,6 +50,8 @@ dependencies {
 java {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+
+    withSourcesJar()
 }
 
 tasks.withType(JavaCompile) {
@@ -61,36 +65,5 @@ tasks.processResources {
 }
 
 tasks.assemble {
-    dependsOn(tasks.shadowJar)
+    dependsOn reobfJar
 }
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifactId 'guardutils'
-        }
-    }
-    repositories {
-        maven {
-            name = 'GitHubPackages'
-            url = uri('https://maven.pkg.github.com/KillionRevival/GuardUtils')
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv('GITHUB_ACTOR')
-                password = project.findProperty("gpr.key") ?: System.getenv('GITHUB_TOKEN')
-            }
-        }
-    }
-}
-
-shadowJar {
-  configurations = [project.configurations.shadow]
-  archiveBaseName.set(project.name)
-  archiveVersion.set(project.version)
-  archiveClassifier.set('')
-}
-

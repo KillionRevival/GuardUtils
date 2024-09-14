@@ -16,10 +16,11 @@ import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabCompl
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
-import com.flyerzrule.mc.guardutils.listeners.GuardArmorListener;
 import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerDeathListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
+import com.flyerzrule.mc.guardutils.protocol.EnitityEquipmentListener;
+import com.flyerzrule.mc.guardutils.protocol.SetSlotListener;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
@@ -48,6 +49,7 @@ public class GuardUtils extends JavaPlugin {
         luckperms = LuckPermsProvider.get();
 
         protocolManager = ProtocolLibrary.getProtocolManager();
+        registerProtocolListeners();
 
         registerCommands();
         registerTabComplete();
@@ -114,8 +116,13 @@ public class GuardUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
-        protocolManager.addPacketListener(new GuardArmorListener());
-
         GuardUtils.logger.sendSuccess("Listeners have been registered.");
+    }
+
+    private void registerProtocolListeners() {
+        protocolManager.addPacketListener(new SetSlotListener());
+        protocolManager.addPacketListener(new EnitityEquipmentListener());
+
+        GuardUtils.logger.sendSuccess("Protocol listeners have been registered.");
     }
 }

@@ -1,3 +1,2 @@
 - Allow certain items to be dropped when a guard is killed
 - Add commands for switching between a guard and a player
-- Add ProtocolLib event Use_item for when armor is equipped by right clicking

@@ -20,8 +20,6 @@ import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerDeathListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
 import com.flyerzrule.mc.guardutils.protocol.EnitityEquipmentListener;
-import com.flyerzrule.mc.guardutils.protocol.SetSlotListener;
-import com.flyerzrule.mc.guardutils.protocol.WindowClickListener;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
@@ -29,10 +27,8 @@ import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
 
 public class GuardUtils extends JavaPlugin {
     private final String pluginName = "GuardUtils";
@@ -123,9 +119,7 @@ public class GuardUtils extends JavaPlugin {
     }
 
     private void registerProtocolListeners() {
-        protocolManager.addPacketListener(new SetSlotListener());
         protocolManager.addPacketListener(new EnitityEquipmentListener());
-        protocolManager.addPacketListener(new WindowClickListener());
 
         GuardUtils.logger.sendSuccess("Protocol listeners have been registered.");
     }

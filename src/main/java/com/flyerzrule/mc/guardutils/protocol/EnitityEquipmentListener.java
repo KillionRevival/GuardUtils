@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.comphenix.packetwrapper.wrappers.play.clientbound.WrapperPlayServerEntityEquipment;
@@ -31,19 +33,25 @@ public class EnitityEquipmentListener extends PacketAdapter {
         WrapperPlayServerEntityEquipment wrapper = new WrapperPlayServerEntityEquipment(packet);
 
         ItemStack item = wrapper.getSlots().getFirst().getSecond();
+        int entityId = wrapper.getEntity();
+        Entity entity = event.getPlayer().getWorld().getEntities().stream().filter(e -> e.getEntityId() == entityId)
+                .findFirst().get();
 
-        if (item != null && ArmorUtil.isGuardArmor(item.getType())) {
+        Player player = null;
+        if (entity != null && entity instanceof Player) {
+            player = (Player) entity;
+        }
+
+        if (player != null && ArmorUtil.isPlayerGuard(player) && item != null
+                && ArmorUtil.isArmor(item.getType())) {
             Material chainmailType = ArmorUtil.getChainmailType(item.getType());
             ItemStack chainmailItem = new ItemStack(chainmailType);
+            ArmorUtil.copyEnchants(item, chainmailItem);
             List<Pair<ItemSlot, ItemStack>> pairs = new ArrayList<>();
             pairs.add(new Pair<ItemSlot, ItemStack>(wrapper.getSlots().getFirst().getFirst(), chainmailItem));
             wrapper.setSlots(pairs);
-            GuardUtils.getMyLogger().sendDebug("was set");
-        } else {
-            GuardUtils.getMyLogger().sendDebug("NOT SET");
-            if (item != null) {
-                GuardUtils.getMyLogger().sendDebug(item.getType().name());
-            }
+            GuardUtils.getMyLogger().sendDebug(String.format("Changing appearance of armor on %s for player %s",
+                    player.getName(), event.getPlayer().getName()));
         }
     }
 }

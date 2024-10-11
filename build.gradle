@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id("io.papermc.paperweight.userdev") version "1.7.1"
 }
 
 group = 'com.flyerzrule.mc.guardutils'
@@ -42,8 +41,6 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle(paperVersion)
-
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
     compileOnly "co.killionrevival:killioncommons:3.0.7-SNAPSHOT"
     compileOnly "net.luckperms:api:5.4"
@@ -60,8 +57,6 @@ dependencies {
 java {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
-
-    withSourcesJar()
 }
 
 tasks.withType(JavaCompile) {
@@ -72,8 +67,4 @@ tasks.processResources {
     filesMatching('plugin.yml') {
         expand (version: project.version, mcVersion: mcVersion)
     }
-}
-
-tasks.assemble {
-    dependsOn reobfJar
 }

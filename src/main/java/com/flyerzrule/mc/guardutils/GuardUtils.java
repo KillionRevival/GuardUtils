@@ -19,6 +19,7 @@ import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerDeathListener;
 import com.flyerzrule.mc.guardutils.listeners.PlayerHitListener;
+import com.flyerzrule.mc.guardutils.protocol.EnitityEquipmentListener;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
@@ -26,12 +27,16 @@ import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
 public class GuardUtils extends JavaPlugin {
     private final String pluginName = "GuardUtils";
     private static Plugin plugin;
     private static KillionUtilities killionUtilities;
     private static ConsoleUtil logger;
     private static LuckPerms luckperms;
+    private static ProtocolManager protocolManager;
 
     @Override
     public void onEnable() {
@@ -41,6 +46,9 @@ public class GuardUtils extends JavaPlugin {
         logger = killionUtilities.getConsoleUtil();
 
         luckperms = LuckPermsProvider.get();
+
+        protocolManager = ProtocolLibrary.getProtocolManager();
+        registerProtocolListeners();
 
         registerCommands();
         registerTabComplete();
@@ -68,6 +76,10 @@ public class GuardUtils extends JavaPlugin {
 
     public static LuckPerms getLuckperms() {
         return luckperms;
+    }
+
+    public static ProtocolManager getProtocolManager() {
+        return protocolManager;
     }
 
     private void registerCommands() {
@@ -104,5 +116,11 @@ public class GuardUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
         GuardUtils.logger.sendSuccess("Listeners have been registered.");
+    }
+
+    private void registerProtocolListeners() {
+        protocolManager.addPacketListener(new EnitityEquipmentListener());
+
+        GuardUtils.logger.sendSuccess("Protocol listeners have been registered.");
     }
 }

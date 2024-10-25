@@ -8,4 +8,11 @@ public class TimeUtils {
         int seconds = (int) Math.floor((time / 1000) % 60);
         return new MinSec(minutes, seconds);
     }
+
+    public static String getFormattedTimeFromSeconds(int seconds) {
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+
+        return String.format("%d:%d", hours, minutes);
+    }
 }

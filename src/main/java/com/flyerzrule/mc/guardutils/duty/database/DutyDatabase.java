@@ -20,6 +20,8 @@ public class DutyDatabase extends DatabaseConnection {
     success &= (this.createSchemaIfNotExists("guard_utils") == ReturnCode.SUCCESS);
     success &= (this.createEnumIfNotExists("guard_utils", "RANK",
         new String[] { "FREE", "CITIZEN" }) == ReturnCode.SUCCESS);
+    success &= (this.createEnumIfNotExists("guard_utils", "CLAN_RANK",
+        new String[] { "LEADER", "TRUSTED", "UNTRUSTED" }) == ReturnCode.SUCCESS);
     success &= this.createPlayerInfoTable();
     success &= this.createGuardStatsTable();
 
@@ -38,7 +40,7 @@ public class DutyDatabase extends DatabaseConnection {
   }
 
   private boolean createPlayerInfoTable() {
-    String query = "CREATE TABLE IF NOT EXISTS guard_utils.player_info (PRIMARY KEY user_id TEXT, rank RANK, clan_tag TEXT, time_of_last_on_duty TIMESTAMP);";
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.player_info (PRIMARY KEY user_id TEXT, rank RANK, clan_tag TEXT, clan_rank CLAN_RANK, time_of_last_on_duty TIMESTAMP);";
 
     try {
       this.executeQuery(query);
@@ -63,8 +65,8 @@ public class DutyDatabase extends DatabaseConnection {
     return false;
   }
 
-  public boolean addPlayerInfo(String userId, RANK rank, String clanTag) {
-    String query = "INSERT INTO guard_utils.player_info (user_id, rank, clan_tag, time_of_last_on_duty) VALUES (?, ?, ?, NOW());";
+  public boolean addPlayerInfo(String userId, RANK rank, String clanTag, String clanRank) {
+    String query = "INSERT INTO guard_utils.player_info (user_id, rank, clan_tag, clan_rank, time_of_last_on_duty) VALUES (?, ?, ?, ?, NOW());";
     try {
       this.executeUpdate(query, userId, rank.getName(), clanTag);
       GuardUtils.getMyLogger().sendDebug("Added player info for " + userId);

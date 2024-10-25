@@ -3,7 +3,8 @@ package com.flyerzrule.mc.guardutils.duty.models;
 public enum CLAN_RANK {
   LEADER("LEADER"),
   TRUSTED("TRUSTED"),
-  UNTRUSTED("UNTRUSTED");
+  UNTRUSTED("UNTRUSTED"),
+  UNKNOWN("UNKNOWN");
 
   private final String name;
 

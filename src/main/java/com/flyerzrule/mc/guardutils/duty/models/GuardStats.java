@@ -18,4 +18,16 @@ public class GuardStats {
     this.deaths = rs.getInt("deaths");
     this.guardTime = rs.getInt("guard_time");
   }
+
+  public void incrementKills() {
+    this.kills++;
+  }
+
+  public void incrementDeaths() {
+    this.deaths++;
+  }
+
+  public void addGuardTime(int time) {
+    this.guardTime += time;
+  }
 }

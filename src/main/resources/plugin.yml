@@ -4,7 +4,7 @@ main: com.flyerzrule.mc.guardutils.GuardUtils
 api-version: ${mcVersion}
 description: Plugin for making a guard's experience better 
 author: [flyerzrule]
-depend: [KillionCommons, LuckPerms, ProtocolLib, PacketWrapper]
+depend: [KillionCommons, LuckPerms, ProtocolLib, PacketWrapper, SimpleClans]
 commands:
   sword:
     description: Requests that a player drops their sword
@@ -35,7 +35,10 @@ commands:
     permission: guardutils.admin
     permission-message: You do not have permission to use this command.
   guard:
-    description: Start and stop a guard shift
+    description: Open the guard menu
+    usage: /<command>
+    permission: guardutils.canBeGuard
+    permission-message: You do not have permission to use this command.
 permissions:
   guardutils.guard:
     description: Gives access to all guard GuardUtils commands
@@ -48,4 +51,7 @@ permissions:
     default: op
   guardutils.guard.scoreboard:
     description: Gives access to the guard scoreboard
+    default: false
+  guardutils.canBeGuard:
+    description: Gives access to the /guard command
     default: false

@@ -1,5 +1,7 @@
 package com.flyerzrule.mc.guardutils;
 
+import java.util.Objects;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +16,7 @@ import com.flyerzrule.mc.guardutils.commands.tabcomplete.KOSTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.OnOffTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.OtherContrabandTabComplete;
 import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
+import com.flyerzrule.mc.guardutils.duty.listeners.GuardKillDeathListener;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.listeners.InvisibilityListener;
@@ -23,104 +26,101 @@ import com.flyerzrule.mc.guardutils.protocol.EnitityEquipmentListener;
 
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
-
+import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 
 public class GuardUtils extends JavaPlugin {
-    private final String pluginName = "GuardUtils";
-    private static Plugin plugin;
-    private static KillionUtilities killionUtilities;
-    private static ConsoleUtil logger;
-    private static LuckPerms luckperms;
-    private static ProtocolManager protocolManager;
+  private final String pluginName = "GuardUtils";
 
-    @Override
-    public void onEnable() {
-        saveDefaultConfig();
-        plugin = this;
-        killionUtilities = new KillionUtilities(this);
-        logger = killionUtilities.getConsoleUtil();
+  @Getter
+  private static Plugin plugin;
+  @Getter
+  private static KillionUtilities killionUtilities;
+  @Getter
+  private static ConsoleUtil myLogger;
+  @Getter
+  private static LuckPerms luckperms;
+  @Getter
+  private static ProtocolManager protocolManager;
+  @Getter
+  private static SimpleClans simpleClans;
 
-        luckperms = LuckPermsProvider.get();
+  @Override
+  public void onEnable() {
+    saveDefaultConfig();
+    plugin = this;
+    killionUtilities = new KillionUtilities(this);
+    myLogger = killionUtilities.getConsoleUtil();
 
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        registerProtocolListeners();
+    luckperms = LuckPermsProvider.get();
 
-        registerCommands();
-        registerTabComplete();
-        registerListeners();
+    protocolManager = ProtocolLibrary.getProtocolManager();
 
-        InvisPlayers.getInstance();
-        ArmorStandManager.getInstance().createArmorStandTask();
+    simpleClans = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
-        logger.sendSuccess(this.pluginName + " has been enabled.");
-    }
+    registerProtocolListeners();
 
-    @Override
-    public void onDisable() {
-        ArmorStandManager.getInstance().removeAllArmorStands();
-        logger.sendSuccess(this.pluginName + " has been disabled.");
-    }
+    registerCommands();
+    registerTabComplete();
+    registerListeners();
 
-    public static Plugin getPlugin() {
-        return plugin;
-    }
+    InvisPlayers.getInstance();
+    ArmorStandManager.getInstance().createArmorStandTask();
 
-    public static ConsoleUtil getMyLogger() {
-        return logger;
-    }
+    myLogger.sendSuccess(this.pluginName + " has been enabled.");
+  }
 
-    public static LuckPerms getLuckperms() {
-        return luckperms;
-    }
+  @Override
+  public void onDisable() {
+    ArmorStandManager.getInstance().removeAllArmorStands();
+    myLogger.sendSuccess(this.pluginName + " has been disabled.");
+  }
 
-    public static ProtocolManager getProtocolManager() {
-        return protocolManager;
-    }
+  private void registerCommands() {
+    getCommand("sword").setExecutor(new SwordCommand());
+    getCommand("bow").setExecutor(new BowCommand());
+    getCommand("cb").setExecutor(new OtherContrabandCommand());
+    getCommand("kos").setExecutor(new KOSCommand());
+    getCommand("guardsb").setExecutor(new ScoreboardToggleCommand());
+    getCommand("guardsinvistag").setExecutor(new GuardInvisTagCommand());
 
-    private void registerCommands() {
-        getCommand("sword").setExecutor(new SwordCommand());
-        getCommand("bow").setExecutor(new BowCommand());
-        getCommand("cb").setExecutor(new OtherContrabandCommand());
-        getCommand("kos").setExecutor(new KOSCommand());
-        getCommand("guardsb").setExecutor(new ScoreboardToggleCommand());
-        getCommand("guardsinvistag").setExecutor(new GuardInvisTagCommand());
+    myLogger.sendSuccess("Commands have been registered.");
+  }
 
-        GuardUtils.logger.sendSuccess("Commands have been registered.");
-    }
+  private void registerTabComplete() {
+    PlayerTabComplete playerTabComplete = new PlayerTabComplete();
+    KOSTabComplete kosTabComplete = new KOSTabComplete();
+    OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
+    OnOffTabComplete onOffTabComplete = new OnOffTabComplete();
 
-    private void registerTabComplete() {
-        PlayerTabComplete playerTabComplete = new PlayerTabComplete();
-        KOSTabComplete kosTabComplete = new KOSTabComplete();
-        OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
-        OnOffTabComplete onOffTabComplete = new OnOffTabComplete();
+    getCommand("sword").setTabCompleter(playerTabComplete);
+    getCommand("bow").setTabCompleter(playerTabComplete);
+    getCommand("cb").setTabCompleter(otherContrabandTabComplete);
+    getCommand("kos").setTabCompleter(kosTabComplete);
+    getCommand("guardsb").setTabCompleter(onOffTabComplete);
+    getCommand("guardsinvistag").setTabCompleter(onOffTabComplete);
 
-        getCommand("sword").setTabCompleter(playerTabComplete);
-        getCommand("bow").setTabCompleter(playerTabComplete);
-        getCommand("cb").setTabCompleter(otherContrabandTabComplete);
-        getCommand("kos").setTabCompleter(kosTabComplete);
-        getCommand("guardsb").setTabCompleter(onOffTabComplete);
-        getCommand("guardsinvistag").setTabCompleter(onOffTabComplete);
+    myLogger.sendSuccess("Tab completers have been registered.");
+  }
 
-        GuardUtils.logger.sendSuccess("Tab completers have been registered.");
-    }
+  private void registerListeners() {
+    getServer().getPluginManager().registerEvents(new DroppedItemListener(), this);
+    getServer().getPluginManager().registerEvents(new PlayerHitListener(), this);
+    getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
+    getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+    getServer().getPluginManager().registerEvents(new GuardKillDeathListener(), this);
 
-    private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new DroppedItemListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerHitListener(), this);
-        getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+    myLogger.sendSuccess("Listeners have been registered.");
+  }
 
-        GuardUtils.logger.sendSuccess("Listeners have been registered.");
-    }
+  private void registerProtocolListeners() {
+    protocolManager.addPacketListener(new EnitityEquipmentListener());
 
-    private void registerProtocolListeners() {
-        protocolManager.addPacketListener(new EnitityEquipmentListener());
-
-        GuardUtils.logger.sendSuccess("Protocol listeners have been registered.");
-    }
+    myLogger.sendSuccess("Protocol listeners have been registered.");
+  }
 }

@@ -2,7 +2,10 @@ package com.flyerzrule.mc.guardutils.duty.database;
 
 import java.sql.ResultSet;
 
+import org.bukkit.entity.Player;
+
 import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.flyerzrule.mc.guardutils.duty.models.CLAN_RANK;
 import com.flyerzrule.mc.guardutils.duty.models.GuardStats;
 import com.flyerzrule.mc.guardutils.duty.models.PlayerInfo;
 import com.flyerzrule.mc.guardutils.duty.models.RANK;
@@ -21,7 +24,7 @@ public class DutyDatabase extends DatabaseConnection {
     success &= (this.createEnumIfNotExists("guard_utils", "RANK",
         new String[] { "FREE", "CITIZEN" }) == ReturnCode.SUCCESS);
     success &= (this.createEnumIfNotExists("guard_utils", "CLAN_RANK",
-        new String[] { "LEADER", "TRUSTED", "UNTRUSTED" }) == ReturnCode.SUCCESS);
+        new String[] { "LEADER", "TRUSTED", "UNTRUSTED", "UNKNOWN" }) == ReturnCode.SUCCESS);
     success &= this.createPlayerInfoTable();
     success &= this.createGuardStatsTable();
 
@@ -40,7 +43,7 @@ public class DutyDatabase extends DatabaseConnection {
   }
 
   private boolean createPlayerInfoTable() {
-    String query = "CREATE TABLE IF NOT EXISTS guard_utils.player_info (PRIMARY KEY user_id TEXT, rank RANK, clan_tag TEXT, clan_rank CLAN_RANK, time_of_last_on_duty TIMESTAMP);";
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.player_info (PRIMARY KEY user_id TEXT, rank RANK, clan_tag TEXT, clan_rank CLAN_RANK, clan_join_date BIGINT,time_of_last_on_duty TIMESTAMP);";
 
     try {
       this.executeQuery(query);
@@ -65,8 +68,8 @@ public class DutyDatabase extends DatabaseConnection {
     return false;
   }
 
-  public boolean addPlayerInfo(String userId, RANK rank, String clanTag, String clanRank) {
-    String query = "INSERT INTO guard_utils.player_info (user_id, rank, clan_tag, clan_rank, time_of_last_on_duty) VALUES (?, ?, ?, ?, NOW());";
+  public boolean addPlayerInfo(String userId, RANK rank, String clanTag, long clanJoinDate, CLAN_RANK clanRank) {
+    String query = "INSERT INTO guard_utils.player_info (user_id, rank, clan_tag, clan_rank, clan_join_date, time_of_last_on_duty) VALUES (?, ?, ?, ?, ?, NOW());";
     try {
       this.executeUpdate(query, userId, rank.getName(), clanTag);
       GuardUtils.getMyLogger().sendDebug("Added player info for " + userId);
@@ -75,6 +78,11 @@ public class DutyDatabase extends DatabaseConnection {
       GuardUtils.getMyLogger().sendThrowable(e);
     }
     return false;
+  }
+
+  public boolean addPlayerInfo(Player player, RANK rank, String clanTag, long clanJoinDate, CLAN_RANK clanRank) {
+    String userId = player.getUniqueId().toString();
+    return this.addPlayerInfo(userId, rank, clanTag, clanJoinDate, clanRank);
   }
 
   public boolean removePlayerInfo(String userId) {
@@ -89,6 +97,11 @@ public class DutyDatabase extends DatabaseConnection {
     return false;
   }
 
+  public boolean removePlayerInfo(Player player) {
+    String userId = player.getUniqueId().toString();
+    return this.removePlayerInfo(userId);
+  }
+
   public PlayerInfo getPlayerInfo(String userId) {
     String query = "SELECT * FROM guard_utils.player_info WHERE user_id = ?;";
     try {
@@ -99,6 +112,11 @@ public class DutyDatabase extends DatabaseConnection {
       GuardUtils.getMyLogger().sendThrowable(e);
     }
     return null;
+  }
+
+  public PlayerInfo getPlayerInfo(Player player) {
+    String userId = player.getUniqueId().toString();
+    return this.getPlayerInfo(userId);
   }
 
   public boolean hasPlayerInfo(String userId) {
@@ -113,6 +131,11 @@ public class DutyDatabase extends DatabaseConnection {
     return false;
   }
 
+  public boolean hasPlayerInfo(Player player) {
+    String userId = player.getUniqueId().toString();
+    return this.hasPlayerInfo(userId);
+  }
+
   public boolean addNewGuardStats(String userId) {
     String query = "INSERT INTO guard_utils.guard_stats (user_id, kills, deaths, guard_time) VALUES (?, 0, 0, 0);";
 
@@ -124,6 +147,11 @@ public class DutyDatabase extends DatabaseConnection {
       GuardUtils.getMyLogger().sendThrowable(e);
     }
     return false;
+  }
+
+  public boolean addNewGuardStats(Player player) {
+    String userId = player.getUniqueId().toString();
+    return this.addNewGuardStats(userId);
   }
 
   public GuardStats getGuardStats(String userId) {
@@ -140,6 +168,11 @@ public class DutyDatabase extends DatabaseConnection {
     return null;
   }
 
+  public GuardStats getGuardStats(Player player) {
+    String userId = player.getUniqueId().toString();
+    return this.getGuardStats(userId);
+  }
+
   public boolean updateGuardStats(GuardStats stats) {
     String query = "UPDATE guard_utils.guard_stats SET kills = ?, deaths = ?, guard_time = ? WHERE user_id = ?;";
 
@@ -154,7 +187,7 @@ public class DutyDatabase extends DatabaseConnection {
 
   }
 
-  public boolean hasPlayerStats(String userId) {
+  public boolean hasGuardStats(String userId) {
     String query = "SELECT 1 FROM guard_utils.guard_stats WHERE user_id = ?;";
     try {
       ResultSet rs = this.fetchQuery(query, userId);
@@ -164,5 +197,10 @@ public class DutyDatabase extends DatabaseConnection {
       GuardUtils.getMyLogger().sendThrowable(e);
     }
     return false;
+  }
+
+  public boolean hasGuardStats(Player player) {
+    String userId = player.getUniqueId().toString();
+    return this.hasGuardStats(userId);
   }
 }

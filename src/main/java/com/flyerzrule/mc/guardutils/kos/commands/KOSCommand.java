@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.commands;
+package com.flyerzrule.mc.guardutils.kos.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -73,7 +73,7 @@ public class KOSCommand implements CommandExecutor {
                             sender.sendMessage(response);
                             return true;
                         }
-                        kosTimer.setKOSTimer(player, time);
+                        kosTimer.setKOSTimer(player, guard, time);
                         Component serverMessage = Component.text().color(NamedTextColor.RED)
                                 .content(String.format("%s is KOS for %d minutes!", player.getName(), time))
                                 .build();

@@ -10,6 +10,7 @@ import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 import xyz.xenondevs.invui.gui.Gui;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
+
 import xyz.xenondevs.invui.window.Window;
 
 import java.util.Arrays;
@@ -72,31 +73,6 @@ public class GuardPanel {
                 .setDisplayName("Guard Stats")
                 .setLegacyLore(statsLore)))
         .build();
-  }
-
-  private void openConfirmation(boolean goingOffDuty) {
-    this.confirmGui = Gui.normal().setStructure(
-        "@ ^ @ ^ @ ^ @ ^ @",
-        "^ . . y . n . . ^",
-        "@ ^ @ ^ @ ^ @ ^ @").addIngredient('^',
-            new SimpleItem(new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE)
-                .setDisplayName("§r")))
-        .addIngredient('@',
-            new SimpleItem(new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE)
-                .setDisplayName("§r")))
-        .addIngredient('y',
-            new SimpleItem(new ItemBuilder(Material.GREEN_WOOL)
-                .setDisplayName("CONFIRM"),
-                event -> confirmDutySwitch(goingOffDuty)))
-        .addIngredient('n',
-            new SimpleItem(new ItemBuilder(Material.RED_WOOL)
-                .setDisplayName("CONFIRM"),
-                event -> cancelDutySwitch()))
-        .build();
-
-    String title = (goingOffDuty == true) ? "Confirm: Go Off Duty" : "Confirm: Go On Duty";
-
-    this.window = Window.single().setViewer(this.player).setTitle(title).setGui(this.confirmGui).build();
   }
 
   private void confirmDutySwitch(boolean goingOffDuty) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,12 +13,17 @@ import org.bukkit.entity.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import com.flyerzrule.mc.guardutils.utils.PlayerSkinManager;
+
 public class KOSTimer {
     private static KOSTimer instance;
 
-    private Map<UUID, Long> kosTimers = new HashMap<>();
+    private final PlayerSkinManager playerSkinManager;
+
+    private Map<UUID, KOSTimerPlayer> kosTimers = new HashMap<>();
 
     private KOSTimer() {
+        this.playerSkinManager = PlayerSkinManager.getInstance();
     }
 
     public static KOSTimer getInstance() {
@@ -27,11 +33,18 @@ public class KOSTimer {
         return instance;
     }
 
-    public void setKOSTimer(Player player, int time) {
+    public void setKOSTimer(Player player, Player guard, int time) {
         long timeInMillis = time * 60 * 1000;
         long endTime = System.currentTimeMillis() + timeInMillis;
 
-        kosTimers.put(player.getUniqueId(), endTime);
+        KOSTimerPlayer kosTimerPlayer = new KOSTimerPlayer(player, endTime, guard);
+
+        CompletableFuture.runAsync(() -> {
+            String skinUrl = this.playerSkinManager.getPlayerSkin(player);
+            kosTimerPlayer.setSkinUrl(skinUrl);
+        });
+
+        kosTimers.put(player.getUniqueId(), kosTimerPlayer);
     }
 
     public void cancelKOSTimer(Player player) {
@@ -53,14 +66,18 @@ public class KOSTimer {
     }
 
     public long getKOSTimer(Player player) {
-        return kosTimers.get(player.getUniqueId());
+        return kosTimers.get(player.getUniqueId()).getEndTime();
     }
 
     public List<Player> getPlayersOnKOS() {
-        return kosTimers.keySet().stream().map(uuid -> Bukkit.getPlayer(uuid)).collect(Collectors.toList());
+        return kosTimers.values().stream().map(ele -> ele.getPlayer()).collect(Collectors.toList());
     }
 
     public List<String> getPlayerUsernamesOnKOS() {
-        return kosTimers.keySet().stream().map(uuid -> Bukkit.getPlayer(uuid).getName()).collect(Collectors.toList());
+        return kosTimers.values().stream().map(ele -> ele.getPlayer().getName()).collect(Collectors.toList());
+    }
+
+    public List<KOSTimerPlayer> getKOSTimerPlayers() {
+        return kosTimers.values().stream().collect(Collectors.toList());
     }
 }

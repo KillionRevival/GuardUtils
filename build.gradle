@@ -51,8 +51,9 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
-    compileOnly "co.killionrevival:killioncommons:3.0.7-SNAPSHOT"
+    compileOnly "co.killionrevival:killioncommons:3.1-SNAPSHOT"
     compileOnly "net.luckperms:api:5.4"
+    compileOnly 'com.mojang:authlib:1.5.25'
 
     compileOnly 'com.comphenix.protocol:ProtocolLib:5.3.0'
     compileOnly ('com.comphenix.packetwrapper:packetwrapper:1.20-2.2.1') {

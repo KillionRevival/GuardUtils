@@ -24,20 +24,20 @@ commands:
   kos:
     description: Places a player on KOS for the specified amount of time
     usage: /<command> <5|10|cancel|time> <username>
-  guardsb:
-    description: Toggles the guard scoreboard
-    usage: /<command> [on|off]
-    permission: guardutils.guard
-    permission-message: You do not have permission to use this command.
-  guardsinvistag:
-    description: Toggles the guard invis tag
-    usage: /<command> [on|off]
-    permission: guardutils.admin
-    permission-message: You do not have permission to use this command.
   guard:
     description: Open the guard menu
     usage: /<command>
-    permission: guardutils.canBeGuard
+    permission: guardutils.guard
+    permission-message: You do not have permission to use this command.
+  guardRegister:
+    description: Register a player as a guard
+    usage: /<command>
+    permission: guardutils.guard
+    permission-message: You do not have permission to use this command.
+  guardResign:
+    description: Resign from being a guard
+    usage: /<command>
+    permission: guardutils.guard
     permission-message: You do not have permission to use this command.
 permissions:
   guardutils.guard:
@@ -51,7 +51,4 @@ permissions:
     default: op
   guardutils.guard.scoreboard:
     description: Gives access to the guard scoreboard
-    default: false
-  guardutils.canBeGuard:
-    description: Gives access to the /guard command
     default: false

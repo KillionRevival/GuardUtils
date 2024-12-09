@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.commands;
+package com.flyerzrule.mc.guardutils.requests.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,15 +14,15 @@ import com.flyerzrule.mc.guardutils.utils.Utils;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class BowCommand implements CommandExecutor {
+public class SwordCommand implements CommandExecutor {
     private final String permissionErrorMessage = "You do not have permission to use this command.";
 
-    public BowCommand() {
+    public SwordCommand() {
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("bow")) {
+        if (cmd.getName().equalsIgnoreCase("sword")) {
             if (sender instanceof Player) {
                 Player guard = (Player) sender;
                 if (guard.hasPermission("guardutils.guard")) {
@@ -33,17 +33,16 @@ public class BowCommand implements CommandExecutor {
                             return false;
                         }
 
-                        if (Utils.hasContrabrandInInventory(player, ContrabandType.BOW)) {
-
+                        if (Utils.hasContrabrandInInventory(player, ContrabandType.SWORD)) {
                             player.sendMessage(Message.formatMessage(NamedTextColor.DARK_PURPLE,
-                                    "Drop your bow or you will be sent to solitary for breaking the rules!"));
+                                    "Drop your sword or you will be sent to solitary for breaking the rules!"));
 
                             Requests requests = Requests.getInstance();
-                            requests.addRequest(player, guard, ContrabandType.BOW, null);
+                            requests.addRequest(player, guard, ContrabandType.SWORD, null);
                             return true;
                         } else {
                             TextComponent message = Message.formatMessage(NamedTextColor.RED,
-                                    String.format("%s does not have a bow in their inventory!", player.getName()));
+                                    String.format("%s does not have a sword in their inventory!", player.getName()));
                             guard.sendMessage(message);
                             return true;
                         }

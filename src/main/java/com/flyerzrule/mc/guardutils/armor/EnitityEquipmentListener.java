@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.protocol;
+package com.flyerzrule.mc.guardutils.armor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 import com.comphenix.protocol.wrappers.Pair;
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.protocol.utils.ArmorUtil;
+import com.flyerzrule.mc.guardutils.armor.utils.ArmorUtil;
 
 public class EnitityEquipmentListener extends PacketAdapter {
     public EnitityEquipmentListener() {

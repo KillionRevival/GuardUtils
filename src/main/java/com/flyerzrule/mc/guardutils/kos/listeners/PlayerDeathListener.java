@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.listeners;
+package com.flyerzrule.mc.guardutils.kos.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

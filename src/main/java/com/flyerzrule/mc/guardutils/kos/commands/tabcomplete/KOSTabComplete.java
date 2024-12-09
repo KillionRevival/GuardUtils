@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.commands.tabcomplete;
+package com.flyerzrule.mc.guardutils.kos.commands.tabcomplete;
 
 import java.util.ArrayList;
 import java.util.List;

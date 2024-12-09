@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.commands;
+package com.flyerzrule.mc.guardutils.requests.commands;
 
 import java.util.List;
 

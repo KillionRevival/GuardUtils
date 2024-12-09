@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.protocol.utils;
+package com.flyerzrule.mc.guardutils.armor.utils;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

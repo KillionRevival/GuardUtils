@@ -50,24 +50,36 @@ public class GuardDuty {
       } else {
         clanRank = CLAN_RANK.UNTRUSTED;
       }
+      GuardUtils.getMyLogger()
+          .sendDebug(String.format("Player %s is currently in clan %s with the rank %s with join date %d", clanTag,
+              clanRank.getName(), clanJoinDate));
+    } else {
+      GuardUtils.getMyLogger().sendDebug(String.format("Player %s is not in a clan", player.getName()));
     }
 
     // Put the player in the G clan
     Clan guardClan = sc.getClanManager().getClan("G");
     clanPlayer.setClan(guardClan);
-
-    if (!db.hasGuardStats(player)) {
-      db.addNewGuardStats(player);
-    }
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s added to G clan", player.getName()));
 
     // Add the LP guard group to the player and remove their old group
     // TODO: Implement
 
     // Kill the player
     player.setHealth(0.0);
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a guard", player.getName()));
+
+    if (!db.hasGuardStats(player)) {
+      db.addNewGuardStats(player);
+      GuardUtils.getMyLogger()
+          .sendDebug(String.format("Guard stats for %s didn't exist and were added to DB", player.getName()));
+    }
 
     // Save player info
     db.addPlayerInfo(player, rank, clanTag, clanJoinDate, clanRank);
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s's info saved to DB", player.getName()));
+
+    GuardUtils.getMyLogger().sendInfo(String.format("Player %s is now a guard", player.getName()));
   }
 
   public static void becomePlayer(Player player) {
@@ -109,14 +121,19 @@ public class GuardDuty {
     int timeToAdd = TimeUtils.getSecondsSince(playerInfo.getTimeOfLastOnDuty());
     stats.addGuardTime(timeToAdd);
     db.updateGuardStats(stats);
+    GuardUtils.getMyLogger().sendDebug(String.format("Guard stats for %s updated", player.getName()));
 
     // Set the player's rank to the rank they had before going on duty
     // TODO: Implement
 
     // Kill player
     player.setHealth(0.0);
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a player", player.getName()));
 
     db.removePlayerInfo(player);
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s's info removed from DB", player.getName()));
+
+    GuardUtils.getMyLogger().sendInfo(String.format("Player %s is no longer a guard", player.getName()));
   }
 
   public static boolean isOnDuty(Player player) {

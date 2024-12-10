@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.common.gui.GuardPanel;
+import com.flyerzrule.mc.guardutils.common.gui.panels.MainPanel;
 
 public class GuardCommand implements CommandExecutor {
   public GuardCommand() {
@@ -32,8 +32,9 @@ public class GuardCommand implements CommandExecutor {
     }
 
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s is opening the guard menu", player.getName()));
-    // Open confirmation GUI
-    new GuardPanel(player);
+    
+    MainPanel mainPanel = new MainPanel(player);
+    mainPanel.open();
 
     return true;
   }

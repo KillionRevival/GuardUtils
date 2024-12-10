@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.utils;
+package com.flyerzrule.mc.guardutils.requests.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;

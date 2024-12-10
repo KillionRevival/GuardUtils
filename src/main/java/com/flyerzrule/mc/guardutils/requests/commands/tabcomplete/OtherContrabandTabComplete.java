@@ -11,8 +11,8 @@ import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
 import com.flyerzrule.mc.guardutils.requests.models.Item;
+import com.flyerzrule.mc.guardutils.requests.utils.Utils;
 import com.flyerzrule.mc.guardutils.utils.ChatUtils;
-import com.flyerzrule.mc.guardutils.utils.Utils;
 
 public class OtherContrabandTabComplete implements TabCompleter {
     @Override

@@ -15,7 +15,7 @@ import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
 import com.flyerzrule.mc.guardutils.requests.models.Item;
 import com.flyerzrule.mc.guardutils.requests.models.Request;
-import com.flyerzrule.mc.guardutils.utils.Utils;
+import com.flyerzrule.mc.guardutils.requests.utils.Utils;
 
 public class Requests {
     private static Requests instance;

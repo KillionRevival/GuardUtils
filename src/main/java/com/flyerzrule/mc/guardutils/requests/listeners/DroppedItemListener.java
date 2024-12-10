@@ -15,8 +15,8 @@ import com.flyerzrule.mc.guardutils.requests.Requests;
 import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
 import com.flyerzrule.mc.guardutils.requests.models.Item;
 import com.flyerzrule.mc.guardutils.requests.models.Request;
+import com.flyerzrule.mc.guardutils.requests.utils.Utils;
 import com.flyerzrule.mc.guardutils.utils.Message;
-import com.flyerzrule.mc.guardutils.utils.Utils;
 
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

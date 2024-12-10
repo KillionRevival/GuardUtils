@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.flyerzrule.mc.guardutils.armor.EnitityEquipmentListener;
+import com.flyerzrule.mc.guardutils.armor.listeners.EnitityEquipmentListener;
 import com.flyerzrule.mc.guardutils.armorstands.ArmorStandManager;
 import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
 import com.flyerzrule.mc.guardutils.duty.commands.RegisterAsGuardCommand;

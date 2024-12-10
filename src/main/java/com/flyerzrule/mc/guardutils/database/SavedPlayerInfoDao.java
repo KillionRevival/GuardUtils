@@ -58,7 +58,7 @@ public class SavedPlayerInfoDao extends DataAccessObject<SavedPlayerInfo> {
   }
 
   private void createSavedPlayerInfoTable() {
-    String query = "CREATE TABLE IF NOT EXISTS guard_utils.saved_player_info (PRIMARY KEY uuid TEXT, rank RANK, clan_tag TEXT, clan_rank CLAN_RANK, clan_join_date BIGINT,time_start_duty TIMESTAMP);";
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.saved_player_info (uuid TEXT PRIMARY KEY, rank RANK, clan_tag TEXT, clan_rank CLAN_RANK, clan_join_date BIGINT,time_start_duty TIMESTAMP);";
     try {
       executeQuery(query);
     } catch (Exception e) {

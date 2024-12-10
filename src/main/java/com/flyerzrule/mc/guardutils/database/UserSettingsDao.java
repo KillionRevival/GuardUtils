@@ -31,7 +31,7 @@ public class UserSettingsDao extends DataAccessObject<UserSetting> {
   }
 
   private void createUserSettingsTable() {
-    String query = "CREATE TABLE IF NOT EXISTS guard_utils.user_settings (PRIMARY KEY uuid TEXT, scoreboard_enabled boolean);";
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.user_settings (uuid TEXT PRIMARY KEY, scoreboard_enabled boolean);";
     try {
       executeQuery(query);
     } catch (Exception e) {
@@ -54,7 +54,7 @@ public class UserSettingsDao extends DataAccessObject<UserSetting> {
   }
 
   public void setScoreboardEnabled(String uuid, boolean newValue) {
-    String query = "UPDATE guard_utils.user_settings SET scoreboard_enabled = ? WHERE uuid = ?;";
+    String query = "INSERT INTO guard_utils.user_settings (uuid, scoreboard_enabled) VALUES (?, ?) ON CONFLICT (uuid) DO UPDATE SET scoreboard_enabled = EXCLUDED.scoreboard_enabled;";
     try {
       executeUpdate(query, newValue, uuid);
     } catch (Exception e) {

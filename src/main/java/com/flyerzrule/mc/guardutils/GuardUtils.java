@@ -8,10 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flyerzrule.mc.guardutils.armor.EnitityEquipmentListener;
 import com.flyerzrule.mc.guardutils.armorstands.ArmorStandManager;
-import com.flyerzrule.mc.guardutils.commands.GuardInvisTagCommand;
-import com.flyerzrule.mc.guardutils.commands.ScoreboardToggleCommand;
-import com.flyerzrule.mc.guardutils.commands.tabcomplete.OnOffTabComplete;
-import com.flyerzrule.mc.guardutils.commands.tabcomplete.PlayerTabComplete;
+import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
+import com.flyerzrule.mc.guardutils.duty.commands.RegisterAsGuardCommand;
+import com.flyerzrule.mc.guardutils.duty.commands.ResignFromGuardCommand;
 import com.flyerzrule.mc.guardutils.duty.listeners.GuardKillDeathListener;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.invis.listeners.InvisibilityListener;
@@ -22,6 +21,7 @@ import com.flyerzrule.mc.guardutils.requests.commands.BowCommand;
 import com.flyerzrule.mc.guardutils.requests.commands.OtherContrabandCommand;
 import com.flyerzrule.mc.guardutils.requests.commands.SwordCommand;
 import com.flyerzrule.mc.guardutils.requests.commands.tabcomplete.OtherContrabandTabComplete;
+import com.flyerzrule.mc.guardutils.requests.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.requests.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.scoreboard.listeners.PlayerHitListener;
 
@@ -90,8 +90,9 @@ public class GuardUtils extends JavaPlugin {
     getCommand("bow").setExecutor(new BowCommand());
     getCommand("cb").setExecutor(new OtherContrabandCommand());
     getCommand("kos").setExecutor(new KOSCommand());
-    getCommand("guardsb").setExecutor(new ScoreboardToggleCommand());
-    getCommand("guardsinvistag").setExecutor(new GuardInvisTagCommand());
+    getCommand("guard").setExecutor(new GuardCommand());
+    getCommand("guardRegister").setExecutor(new RegisterAsGuardCommand());
+    getCommand("guardResign").setExecutor(new ResignFromGuardCommand());
 
     myLogger.sendSuccess("Commands have been registered.");
   }
@@ -100,14 +101,11 @@ public class GuardUtils extends JavaPlugin {
     PlayerTabComplete playerTabComplete = new PlayerTabComplete();
     KOSTabComplete kosTabComplete = new KOSTabComplete();
     OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
-    OnOffTabComplete onOffTabComplete = new OnOffTabComplete();
 
     getCommand("sword").setTabCompleter(playerTabComplete);
     getCommand("bow").setTabCompleter(playerTabComplete);
     getCommand("cb").setTabCompleter(otherContrabandTabComplete);
     getCommand("kos").setTabCompleter(kosTabComplete);
-    getCommand("guardsb").setTabCompleter(onOffTabComplete);
-    getCommand("guardsinvistag").setTabCompleter(onOffTabComplete);
 
     myLogger.sendSuccess("Tab completers have been registered.");
   }

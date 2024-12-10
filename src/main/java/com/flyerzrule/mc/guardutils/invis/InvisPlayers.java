@@ -9,10 +9,8 @@ public class InvisPlayers {
     private static InvisPlayers instance;
 
     private Set<Player> invisiblePlayers = new HashSet<>();
-    private boolean showGuardTag;
 
     private InvisPlayers() {
-        this.showGuardTag = true;
     }
 
     public static InvisPlayers getInstance() {
@@ -37,13 +35,4 @@ public class InvisPlayers {
     public Set<Player> getAllInvisiblePlayers() {
         return invisiblePlayers;
     }
-
-    public boolean getshowGuardTag() {
-        return showGuardTag;
-    }
-
-    public void setshowGuardTag(boolean showGuardTag) {
-        this.showGuardTag = showGuardTag;
-    }
-
 }

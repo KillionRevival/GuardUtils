@@ -60,7 +60,7 @@ dependencies {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
-    shadow 'xyz.xenondevs.invui:invui:1.33'
+    shadow 'xyz.xenondevs.invui:invui:1.43'
 
     compileOnly 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.19.2'
 

@@ -1,15 +1,11 @@
 package com.flyerzrule.mc.guardutils.common.gui.items;
 
-import java.lang.reflect.Field;
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.flyerzrule.mc.guardutils.kos.KOSTimerPlayer;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 import com.flyerzrule.mc.guardutils.utils.time.models.MinSec;
@@ -44,18 +40,19 @@ public class KOSPlayerItem extends MyAbstractItem {
     ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
-    GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+    if (skullMeta != null) {
+      // Create a PlayerProfile
+      PlayerProfile profile = this.player.getPlayer().getPlayerProfile();
 
-    profile.getProperties().put("textures", new Property("textures", this.player.getSkinUrl()));
-    try {
-      Field profileField = skullMeta.getClass().getDeclaredField("profile");
-      profileField.setAccessible(true);
-      profileField.set(skullMeta, profile);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      GuardUtils.getMyLogger().sendThrowable(e);
+      // Add the texture property to the profile
+      profile.getProperties().add(new ProfileProperty("textures", this.player.getSkinUrl()));
+
+      // Assign the PlayerProfile to the SkullMeta
+      skullMeta.setPlayerProfile(profile);
+
+      skull.setItemMeta(skullMeta);
     }
 
-    skull.setItemMeta(skullMeta);
     return skull;
   }
 

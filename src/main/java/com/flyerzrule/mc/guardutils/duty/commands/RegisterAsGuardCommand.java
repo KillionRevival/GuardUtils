@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.duty.gui.GuardConfirmPanel;
 import com.flyerzrule.mc.guardutils.duty.utils.GuardDuty;
 
@@ -37,6 +38,7 @@ public class RegisterAsGuardCommand implements CommandExecutor {
       return true;
     }
 
+    GuardUtils.getMyLogger().sendInfo(String.format("Player %s is now a guard", player.getName()));
     // Open confirmation GUI
     new GuardConfirmPanel(player, false);
 

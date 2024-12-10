@@ -20,7 +20,7 @@ public class BorderItem extends AbstractItem {
 
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(this.material).setDisplayName("§r");
+    return new ItemBuilder(this.material).setDisplayName("Go Back");
   }
 
   @Override

@@ -34,7 +34,7 @@ public class GuardStatsDao extends DataAccessObject<GuardStats> {
   }
 
   private void createGuardStatsTable() {
-    String query = "CREATE TABLE IF NOT EXISTS guard_utils.guard_stats (PRIMARY KEY uuid TEXT, kills int, deaths int, guard_time int);";
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.guard_stats (uuid TEXT PRIMARY KEY, kills int, deaths int, guard_time int);";
     try {
       executeQuery(query);
     } catch (Exception e) {
@@ -53,6 +53,7 @@ public class GuardStatsDao extends DataAccessObject<GuardStats> {
   }
 
   public void addNewGuardStats(Player player) {
+    GuardUtils.getMyLogger().sendDebug(String.format("Adding new guard stats for %s", player.getName()));
     String uuid = player.getUniqueId().toString();
     this.addNewGuardStats(uuid);
   }

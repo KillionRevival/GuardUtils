@@ -17,6 +17,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.flyerzrule.mc.guardutils.database.UserSettingsDao;
 
 import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import net.kyori.adventure.text.Component;
@@ -30,7 +31,10 @@ public class GuardScoreboard {
     private Map<UUID, Map<UUID, List<Long>>> guardAttackData = new HashMap<>();
     private final long hitTimeout;
 
+    private final UserSettingsDao userSettingsDao;
+
     private GuardScoreboard() {
+        this.userSettingsDao = UserSettingsDao.getInstance();
         hitTimeout = GuardUtils.getPlugin().getConfig().getInt("hit-timeout", 120) * 1000;
 
         createScoreboardTask();
@@ -48,13 +52,12 @@ public class GuardScoreboard {
             @Override
             public void run() {
                 for (Player guard : Bukkit.getOnlinePlayers()) {
-                    GuardScoreboard guardScoreboard = GuardScoreboard.getInstance();
                     if (guardAttackData.containsKey(guard.getUniqueId())) {
-                        if (guard.hasPermission("guardutils.guard.scoreboard")) {
-                            guardScoreboard.removeOldAttacks(guard);
-                            guardScoreboard.updateGuardScoreboard(guard);
+                        if (userSettingsDao.getScoreboardEnabled(guard.getUniqueId().toString())) {
+                            removeOldAttacks(guard);
+                            updateGuardScoreboard(guard);
                         } else {
-                            guardScoreboard.hideGuardScoreboard(guard);
+                            hideGuardScoreboard(guard);
                         }
                     }
                 }

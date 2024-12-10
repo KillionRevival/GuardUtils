@@ -49,9 +49,6 @@ permissions:
   guardutils.admin:
     description: Gives access to all admin GuardUtils commands
     default: op
-  guardutils.guard.scoreboard:
-    description: Gives access to the guard scoreboard
-    default: false
   guardutils.canBeGuard:
     description: Gives access to the /guardRegister command
     default: false

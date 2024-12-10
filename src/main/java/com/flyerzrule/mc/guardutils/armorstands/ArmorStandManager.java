@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.armorstands.models.ArmorStandFollower;
+import com.flyerzrule.mc.guardutils.database.SettingsDao;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.kos.KOSTimer;
 import com.flyerzrule.mc.guardutils.utils.Message;
@@ -18,83 +19,86 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ArmorStandManager {
-    private static ArmorStandManager instance;
+  private static ArmorStandManager instance;
 
-    private Map<UUID, ArmorStandFollower> armorStandFollowers = new HashMap<>();
+  private Map<UUID, ArmorStandFollower> armorStandFollowers = new HashMap<>();
 
-    private ArmorStandManager() {
+  private final KOSTimer kosTimer;
+  private final InvisPlayers invisPlayers;
+  private final SettingsDao settingsDao;
+
+  private ArmorStandManager() {
+    this.kosTimer = KOSTimer.getInstance();
+    this.invisPlayers = InvisPlayers.getInstance();
+    this.settingsDao = SettingsDao.getInstance();
+  }
+
+  public static ArmorStandManager getInstance() {
+    if (instance == null) {
+      instance = new ArmorStandManager();
     }
+    return instance;
+  }
 
-    public static ArmorStandManager getInstance() {
-        if (instance == null) {
-            instance = new ArmorStandManager();
-        }
-        return instance;
+  public void addArmorStand(Player player, Component initialText) {
+    if (!hasArmorStand(player)) {
+      ArmorStandFollower armorStandFollower = new ArmorStandFollower(player, initialText);
+      armorStandFollowers.put(player.getUniqueId(), armorStandFollower);
     }
+  }
 
-    public void addArmorStand(Player player, Component initialText) {
-        if (!hasArmorStand(player)) {
-            ArmorStandFollower armorStandFollower = new ArmorStandFollower(player, initialText);
-            armorStandFollowers.put(player.getUniqueId(), armorStandFollower);
-        }
+  public void removeArmorStand(Player player) {
+    if (hasArmorStand(player)) {
+      ArmorStandFollower armorStandFollower = this.getArmorStand(player);
+      armorStandFollower.stopFollowing();
+      armorStandFollowers.remove(player.getUniqueId());
     }
+  }
 
-    public void removeArmorStand(Player player) {
-        if (hasArmorStand(player)) {
-            ArmorStandFollower armorStandFollower = this.getArmorStand(player);
-            armorStandFollower.stopFollowing();
-            armorStandFollowers.remove(player.getUniqueId());
-        }
+  public void removeAllArmorStands() {
+    for (ArmorStandFollower armorStandFollower : armorStandFollowers.values()) {
+      armorStandFollower.stopFollowing();
     }
+    armorStandFollowers.clear();
+  }
 
-    public void removeAllArmorStands() {
-        for (ArmorStandFollower armorStandFollower : armorStandFollowers.values()) {
-            armorStandFollower.stopFollowing();
-        }
-        armorStandFollowers.clear();
-    }
+  public ArmorStandFollower getArmorStand(Player player) {
+    return armorStandFollowers.get(player.getUniqueId());
+  }
 
-    public ArmorStandFollower getArmorStand(Player player) {
-        return armorStandFollowers.get(player.getUniqueId());
-    }
+  public void updateArmorStandName(Player player, Component text) {
+    ArmorStandFollower armorStandFollower = this.getArmorStand(player);
+    armorStandFollower.updateCustomName(text);
+  }
 
-    public void updateArmorStandName(Player player, Component text) {
-        ArmorStandFollower armorStandFollower = this.getArmorStand(player);
-        armorStandFollower.updateCustomName(text);
+  public boolean hasArmorStand(Player player) {
+    return armorStandFollowers.containsKey(player.getUniqueId());
+  }
 
-    }
-
-    public boolean hasArmorStand(Player player) {
-        return armorStandFollowers.containsKey(player.getUniqueId());
-    }
-
-    public void createArmorStandTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                KOSTimer kosTimer = KOSTimer.getInstance();
-                InvisPlayers invisPlayers = InvisPlayers.getInstance();
-                ArmorStandManager armorStandManager = ArmorStandManager.getInstance();
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!player.hasPermission("guardutils.guard")) {
-                        if (kosTimer.isKOSTimerActive(player)) {
-                            Component tag = Message.formatMessage(NamedTextColor.RED, "KOS");
-                            armorStandManager.addArmorStand(player, tag);
-                        } else {
-                            armorStandManager.removeArmorStand(player);
-                        }
-
-                    } else {
-                        if (invisPlayers.isPlayerInvisible(player) && invisPlayers.getshowGuardTag()) {
-                            Component tag = Message.formatMessage(NamedTextColor.GOLD, "GUARD");
-                            armorStandManager.addArmorStand(player, tag);
-                        } else {
-                            armorStandManager.removeArmorStand(player);
-                        }
-                    }
-
-                }
+  public void createArmorStandTask() {
+    new BukkitRunnable() {
+      @Override
+      public void run() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+          if (!player.hasPermission("guardutils.guard")) {
+            if (kosTimer.isKOSTimerActive(player) && settingsDao.getKOSInvisTagSetting()) {
+              Component tag = Message.formatMessage(NamedTextColor.RED, "KOS");
+              addArmorStand(player, tag);
+            } else {
+              removeArmorStand(player);
             }
-        }.runTaskTimer(GuardUtils.getPlugin(), 0L, 20L); // Update every second
-    }
+
+          } else {
+            if (invisPlayers.isPlayerInvisible(player) && settingsDao.getGuardInvisTagSetting()) {
+              Component tag = Message.formatMessage(NamedTextColor.GOLD, "GUARD");
+              addArmorStand(player, tag);
+            } else {
+              removeArmorStand(player);
+            }
+          }
+
+        }
+      }
+    }.runTaskTimer(GuardUtils.getPlugin(), 0L, 20L); // Update every second
+  }
 }

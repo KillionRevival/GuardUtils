@@ -2,6 +2,7 @@ package com.flyerzrule.mc.guardutils;
 
 import java.util.Objects;
 
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,6 +31,8 @@ import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import xyz.xenondevs.invui.gui.structure.Structure;
+import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -68,6 +71,7 @@ public class GuardUtils extends JavaPlugin {
     registerCommands();
     registerTabComplete();
     registerListeners();
+    registerGlobalIngredients();
 
     InvisPlayers.getInstance();
     ArmorStandManager.getInstance().createArmorStandTask();
@@ -122,5 +126,11 @@ public class GuardUtils extends JavaPlugin {
     protocolManager.addPacketListener(new EnitityEquipmentListener());
 
     myLogger.sendSuccess("Protocol listeners have been registered.");
+  }
+
+  private void registerGlobalIngredients() {
+    Structure.addGlobalIngredient('#', new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName("§r"));
+    Structure.addGlobalIngredient('^', new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).setDisplayName("§r"));
+    Structure.addGlobalIngredient('@', new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName("§r"));
   }
 }

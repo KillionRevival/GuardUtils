@@ -52,3 +52,6 @@ permissions:
   guardutils.guard.scoreboard:
     description: Gives access to the guard scoreboard
     default: false
+  guardutils.canBeGuard:
+    description: Gives access to the /guardRegister command
+    default: false

@@ -10,14 +10,14 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
 import xyz.xenondevs.invui.window.Window;
 
-public class GuardConfimPanel {
+public class GuardConfirmPanel {
   private final Player player;
   private final boolean goingOffDuty;
 
   private Gui gui;
   private Window window;
 
-  public GuardConfimPanel(Player player, boolean goingOffDuty) {
+  public GuardConfirmPanel(Player player, boolean goingOffDuty) {
     this.player = player;
     this.goingOffDuty = goingOffDuty;
 
@@ -56,9 +56,14 @@ public class GuardConfimPanel {
     } else {
       GuardDuty.becomeGuard(player);
     }
+    this.close();
   }
 
   private void cancelDutyChange() {
+    this.close();
+  }
+
+  private void close() {
     this.window.close();
   }
 }

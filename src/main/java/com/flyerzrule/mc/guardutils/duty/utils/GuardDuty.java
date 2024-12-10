@@ -3,10 +3,10 @@ package com.flyerzrule.mc.guardutils.duty.utils;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.duty.database.DutyDatabase;
+import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
+import com.flyerzrule.mc.guardutils.database.SavedPlayerInfoDao;
+import com.flyerzrule.mc.guardutils.database.models.SavedPlayerInfo;
 import com.flyerzrule.mc.guardutils.duty.models.CLAN_RANK;
-import com.flyerzrule.mc.guardutils.duty.models.GuardStats;
-import com.flyerzrule.mc.guardutils.duty.models.PlayerInfo;
 import com.flyerzrule.mc.guardutils.duty.models.RANK;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 
@@ -15,11 +15,12 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 public class GuardDuty {
+  private static final GuardStatsDao guardStatsDao = GuardStatsDao.getInstance();
+  private static final SavedPlayerInfoDao savedPlayerInfoDao = SavedPlayerInfoDao.getInstance();
+
   public static void becomeGuard(Player player) {
     // TODO: Make sure the switch does not effect DTR
-    DutyDatabase db = DutyDatabase.getInstance();
-
-    if (db.hasPlayerInfo(player)) {
+    if (isOnDuty(player)) {
       GuardUtils.getMyLogger().sendError(String.format("Player %s is already on duty!", player.getName()));
       return;
     }
@@ -69,14 +70,16 @@ public class GuardDuty {
     player.setHealth(0.0);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a guard", player.getName()));
 
-    if (!db.hasGuardStats(player)) {
-      db.addNewGuardStats(player);
+    if (!guardStatsDao.hasGuardStats(player)) {
+      guardStatsDao.addNewGuardStats(player);
       GuardUtils.getMyLogger()
           .sendDebug(String.format("Guard stats for %s didn't exist and were added to DB", player.getName()));
     }
 
     // Save player info
-    db.addPlayerInfo(player, rank, clanTag, clanJoinDate, clanRank);
+    SavedPlayerInfo savedPlayerInfo = new SavedPlayerInfo(player.getUniqueId().toString(), rank, clanTag, clanRank,
+        clanJoinDate, null);
+    savedPlayerInfoDao.addPlayerInfo(savedPlayerInfo);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s's info saved to DB", player.getName()));
 
     GuardUtils.getMyLogger().sendInfo(String.format("Player %s is now a guard", player.getName()));
@@ -84,14 +87,12 @@ public class GuardDuty {
 
   public static void becomePlayer(Player player) {
     // TODO: Make sure the switch does not effect DTR
-    DutyDatabase db = DutyDatabase.getInstance();
-
-    if (!db.hasPlayerInfo(player)) {
+    if (!isOnDuty(player)) {
       GuardUtils.getMyLogger().sendError(String.format("Player %s is not on duty!", player.getName()));
       return;
     }
 
-    PlayerInfo playerInfo = db.getPlayerInfo(player);
+    SavedPlayerInfo playerInfo = savedPlayerInfoDao.getPlayerInfo(player);
 
     SimpleClans sc = GuardUtils.getSimpleClans();
     ClanPlayer clanPlayer = sc.getClanManager().getClanPlayer(player);
@@ -117,10 +118,8 @@ public class GuardDuty {
     }
 
     // Update guard stats
-    GuardStats stats = db.getGuardStats(player);
-    int timeToAdd = TimeUtils.getSecondsSince(playerInfo.getTimeOfLastOnDuty());
-    stats.addGuardTime(timeToAdd);
-    db.updateGuardStats(stats);
+    int timeToAdd = TimeUtils.getSecondsSince(playerInfo.getTimeStartOfDuty());
+    guardStatsDao.addGuardTime(player.getUniqueId().toString(), timeToAdd);
     GuardUtils.getMyLogger().sendDebug(String.format("Guard stats for %s updated", player.getName()));
 
     // Set the player's rank to the rank they had before going on duty
@@ -130,36 +129,19 @@ public class GuardDuty {
     player.setHealth(0.0);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a player", player.getName()));
 
-    db.removePlayerInfo(player);
+    savedPlayerInfoDao.removePlayerInfo(player);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s's info removed from DB", player.getName()));
 
     GuardUtils.getMyLogger().sendInfo(String.format("Player %s is no longer a guard", player.getName()));
   }
 
   public static boolean isOnDuty(Player player) {
-    DutyDatabase db = DutyDatabase.getInstance();
-    return db.hasPlayerInfo(player);
+    return savedPlayerInfoDao.hasPlayerInfo(player);
   }
 
   public static RANK getRank(Player player) {
     // TODO: Check the player's primary group and return the corresponding rank
     return RANK.UNKNOWN;
-  }
-
-  public static void addGuardKill(Player player) {
-    DutyDatabase db = DutyDatabase.getInstance();
-    GuardStats stats = db.getGuardStats(player);
-
-    stats.incrementKills();
-    db.updateGuardStats(stats);
-  }
-
-  public static void addGuardDeath(Player player) {
-    DutyDatabase db = DutyDatabase.getInstance();
-    GuardStats stats = db.getGuardStats(player);
-
-    stats.incrementDeaths();
-    db.updateGuardStats(stats);
   }
 
   public static void switchDuty(Player player) {

@@ -38,7 +38,7 @@ public class RegisterAsGuardCommand implements CommandExecutor {
     }
 
     // Open confirmation GUI
-    GuardConfirmPanel confirmPanel = new GuardConfirmPanel(player, false);
+    new GuardConfirmPanel(player, false);
 
     return true;
   }

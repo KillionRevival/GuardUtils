@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.database.models.Setting;
 
 import co.killionrevival.killioncommons.database.DataAccessObject;
@@ -12,8 +13,6 @@ import co.killionrevival.killioncommons.database.DataAccessObject;
 public class SettingsDao extends DataAccessObject<Setting> {
   private static SettingsDao instance;
 
-  private final String SCHEMA_NAME = "guard_utils";
-  private final String TABLE_NAME = "settings";
   private final String INVIS_TAG_KEY = "invis_tag";
 
   private SettingsDao(final GuardsDB db) {
@@ -30,32 +29,45 @@ public class SettingsDao extends DataAccessObject<Setting> {
   }
 
   private void createSchema() {
-    createSchemaIfNotExists(this.SCHEMA_NAME);
+    createSchemaIfNotExists("guard_utils");
   }
 
   private void createSettingsTable() {
-    String query = String.format("CREATE TABLE IF NOT EXISTS %s.%s (PRIMARY KEY key TEXT, value boolean);",
-        this.SCHEMA_NAME, this.TABLE_NAME);
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.settings (PRIMARY KEY key TEXT, value boolean);";
     try {
       executeQuery(query);
     } catch (Exception e) {
-      e.printStackTrace();
+      GuardUtils.getMyLogger().sendThrowable(e);
     }
   }
 
-  private boolean getInvisTagSetting() {
-    String query = String.format("SELECT value FROM %s.%s WHERE key = '%s';", this.SCHEMA_NAME, this.TABLE_NAME,
-        this.INVIS_TAG_KEY);
+  public boolean getInvisTagSetting() {
+    String query = "SELECT * FROM guard_utils.settings WHERE key = ?;";
     try {
-      List<Setting> settings = fetchQuery(query);
+      List<Setting> settings = fetchQuery(query, INVIS_TAG_KEY);
       if (settings.size() == 0) {
         return true;
       }
       return settings.get(0).getValue();
     } catch (Exception e) {
-      e.printStackTrace();
+      GuardUtils.getMyLogger().sendThrowable(e);
       return true;
     }
+  }
+
+  public void setInvisTagSetting(boolean newValue) {
+    String query = "UPDATE guard_utils.settings SET value = ? WHERE key = ?;";
+    try {
+      executeUpdate(query, newValue, INVIS_TAG_KEY);
+    } catch (Exception e) {
+      GuardUtils.getMyLogger().sendThrowable(e);
+    }
+  }
+
+  public boolean toggleInvisTagSetting() {
+    boolean currentSetting = this.getInvisTagSetting();
+    this.setInvisTagSetting(!currentSetting);
+    return !currentSetting;
   }
 
   @Override

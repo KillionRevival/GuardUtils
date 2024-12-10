@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.HttpURLConnection;
 import java.io.InputStreamReader;
 
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -50,16 +51,16 @@ public class PlayerSkinManager {
   }
 
   private String retreiveSkinUrl(Player player) {
-      UUID uuid = player.getUniqueId();
-      JsonObject jsonObject = getRequest("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid
-                      + "?unsigned=false");
+    UUID uuid = player.getUniqueId();
+    JsonObject jsonObject = getRequest("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid
+        + "?unsigned=false");
 
-      if (jsonObject == null) {
-        return null;
-      }
+    if (jsonObject == null) {
+      return null;
+    }
 
-      JsonObject properties = jsonObject.get("properties").getAsJsonArray().get(0).getAsJsonObject();
-      return properties.get("value").getAsString();
+    JsonObject properties = jsonObject.get("properties").getAsJsonArray().get(0).getAsJsonObject();
+    return properties.get("value").getAsString();
   }
 
   private JsonObject getRequest(String url) {
@@ -73,7 +74,7 @@ public class PlayerSkinManager {
       InputStreamReader reader = new InputStreamReader(connection.getInputStream());
       return JsonParser.parseReader(reader).getAsJsonObject();
     } catch (Exception e) {
-      e.printStackTrace();
+      GuardUtils.getMyLogger().sendThrowable(e);
     }
     return null;
   }

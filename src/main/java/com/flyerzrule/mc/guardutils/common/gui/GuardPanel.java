@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.K;
 
 import xyz.xenondevs.invui.gui.Gui;
 import xyz.xenondevs.invui.gui.ScrollGui;
@@ -16,12 +15,18 @@ import xyz.xenondevs.invui.item.Item;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
 
+import com.flyerzrule.mc.guardutils.common.gui.items.BorderItem;
+import com.flyerzrule.mc.guardutils.common.gui.items.InvisTagsItem;
 import com.flyerzrule.mc.guardutils.common.gui.items.KOSPlayerItem;
+import com.flyerzrule.mc.guardutils.common.gui.items.ScoreboardItem;
 import com.flyerzrule.mc.guardutils.common.gui.items.ScrollDownItem;
 import com.flyerzrule.mc.guardutils.common.gui.items.ScrollUpItem;
+import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
+import com.flyerzrule.mc.guardutils.database.models.GuardStats;
 import com.flyerzrule.mc.guardutils.kos.KOSTimer;
 import com.flyerzrule.mc.guardutils.kos.KOSTimerPlayer;
 import com.flyerzrule.mc.guardutils.utils.Permissions;
+import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 
 public class GuardPanel {
   private final Player player;
@@ -30,12 +35,14 @@ public class GuardPanel {
 
   private Window window;
 
-  private KOSTimer kosTimer;
+  private final KOSTimer kosTimer;
+  private final GuardStatsDao guardStatsDao;
 
   public GuardPanel(Player player) {
     this.player = player;
 
     this.kosTimer = KOSTimer.getInstance();
+    this.guardStatsDao = GuardStatsDao.getInstance();
 
     this.openMain();
   }
@@ -64,12 +71,6 @@ public class GuardPanel {
         .build();
   }
 
-  public void openOnOff(String title) {
-    Gui gui = createOnOffGui();
-    this.window = Window.single().setViewer(this.player).setTitle(title).setGui(gui)
-        .build();
-  }
-
   public void close() {
     this.window.close();
   }
@@ -86,24 +87,16 @@ public class GuardPanel {
         "@ . K . S . H . @",
         settingsGuiLine,
         "@ . . . . . . . @",
-        "^ @ ^ @ ^ @ ^ @ ^").addIngredient('^',
-            new SimpleItem(new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE)
-                .setDisplayName("§r")))
-        .addIngredient('@',
-            new SimpleItem(new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE)
-                .setDisplayName("§r")))
+        "^ @ ^ @ ^ @ ^ @ ^")
         .addIngredient('K',
             new SimpleItem(new ItemBuilder(Material.TARGET).setDisplayName("KOS Players"), event -> openKos()))
         .addIngredient('S',
             new SimpleItem(new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("Guard Stats"), event -> openKos()))
         .addIngredient('H',
             new SimpleItem(new ItemBuilder(Material.KNOWLEDGE_BOOK).setDisplayName("Help"), event -> openKos()))
-        .addIngredient('s',
-            new SimpleItem(new ItemBuilder(Material.OAK_SIGN).setDisplayName("Toggle Scoreboard"),
-                event -> toggleScoreboard()))
+        .addIngredient('s', new ScoreboardItem(player))
         .addIngredient('I',
-            new SimpleItem(new ItemBuilder(Material.ENDER_EYE).setDisplayName("Toggle Invis Tags"),
-                event -> toggleInvisTags()))
+            new InvisTagsItem())
         .build();
   }
 
@@ -132,27 +125,60 @@ public class GuardPanel {
   }
 
   private Gui createStatsGui() {
+    GuardStats stats = this.guardStatsDao.getGuardStats(this.player.getUniqueId().toString());
 
+    String guardTime = TimeUtils.getFormattedTimeFromSeconds(stats.getGuardTime());
+    String kda = String.format("K/D: %2f", stats.getKills() / stats.getDeaths());
+
+    return Gui.normal().setStructure(
+        "@ ^ @ ^ @ ^ @ ^ @",
+        "^ . K . D . T . ^",
+        "@ ^ @ ^ @ ^ @ ^ @")
+        .addIngredient('^', new BorderItem(Material.ORANGE_STAINED_GLASS_PANE, this::openMain))
+        .addIngredient('@', new BorderItem(Material.BLUE_STAINED_GLASS_PANE, this::openMain))
+        .addIngredient('K',
+            new SimpleItem(
+                new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("Kills: " + stats.getKills()).addLoreLines(kda)))
+        .addIngredient('D',
+            new SimpleItem(new ItemBuilder(Material.SKELETON_SKULL).setDisplayName("Deaths: " + stats.getDeaths())))
+        .addIngredient('T',
+            new SimpleItem(new ItemBuilder(Material.CLOCK).setDisplayName("Guard Time: " + guardTime)))
+        .build();
   }
 
   private Gui createHelpGui() {
+    String swordHelp = "Requests that a player drops their sword";
+    String bowHelp = "Requests that a player drops their bow";
+    String otherContrabandHelp = "Requests that a player drops their other contraband. You will need to specify the item type (There is autocomplete).";
+    String kosHelp = "Places a player on KOS for the specified amount of time. The server will keep track of the time.";
+    String guardHelp = "Open the guard menu. View the current KOS players, guard stats, and toggle the guard scoreboard.";
 
-  }
-
-  private Gui createOnOffGui() {
-
+    return Gui.normal().setStructure(
+        "@ ^ @ ^ @ ^ @ ^ @",
+        "^ . . . . . . . ^",
+        "@ . S . B . O . @",
+        "^ . . K . G . . ^",
+        "@ . . . . . . . @",
+        "^ @ ^ @ ^ @ ^ @ ^")
+        .addIngredient('^',
+            new BorderItem(Material.ORANGE_STAINED_GLASS_PANE, this::openMain))
+        .addIngredient('@',
+            new BorderItem(Material.BLUE_STAINED_GLASS_PANE, this::openMain))
+        .addIngredient('S',
+            new SimpleItem(new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("/sword").addLoreLines(swordHelp)))
+        .addIngredient('B',
+            new SimpleItem(new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("/bow").addLoreLines(bowHelp)))
+        .addIngredient('O',
+            new SimpleItem(
+                new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("/cb").addLoreLines(otherContrabandHelp)))
+        .addIngredient('K',
+            new SimpleItem(new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("/kos").addLoreLines(kosHelp)))
+        .addIngredient('G',
+            new SimpleItem(new ItemBuilder(Material.DIAMOND_SWORD).setDisplayName("/guard").addLoreLines(guardHelp)))
+        .build();
   }
 
   private void refreshKos() {
-
+    this.openKos();
   }
-
-  private void toggleScoreboard() {
-
-  }
-
-  private void toggleInvisTags() {
-    Boolean currentSetting
-  }
-
 }

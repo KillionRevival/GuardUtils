@@ -4,24 +4,20 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.NotNull;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.kos.KOSTimerPlayer;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 import com.flyerzrule.mc.guardutils.utils.time.models.MinSec;
 
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.AbstractItem;
 
-public class KOSPlayerItem extends AbstractItem {
+public class KOSPlayerItem extends MyAbstractItem {
   private KOSTimerPlayer player;
 
   public KOSPlayerItem(KOSTimerPlayer player) {
@@ -40,11 +36,6 @@ public class KOSPlayerItem extends AbstractItem {
     return new ItemBuilder(head).setDisplayName(playerName).addLoreLines(guardNameLore, timeLeft);
   }
 
-  // Do nothing
-  @Override
-  public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
-  }
-
   private ItemStack getPlayerSkull() {
     if (this.player.getSkinUrl() == null) {
       return new ItemStack(Material.PLAYER_HEAD);
@@ -61,7 +52,7 @@ public class KOSPlayerItem extends AbstractItem {
       profileField.setAccessible(true);
       profileField.set(skullMeta, profile);
     } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
+      GuardUtils.getMyLogger().sendThrowable(e);
     }
 
     skull.setItemMeta(skullMeta);

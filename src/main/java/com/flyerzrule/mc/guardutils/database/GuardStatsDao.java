@@ -1,6 +1,5 @@
 package com.flyerzrule.mc.guardutils.database;
 
-import java.security.Guard;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

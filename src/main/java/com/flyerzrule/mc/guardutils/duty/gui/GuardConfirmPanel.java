@@ -3,7 +3,7 @@ package com.flyerzrule.mc.guardutils.duty.gui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.flyerzrule.mc.guardutils.duty.utils.GuardDuty;
+import com.flyerzrule.mc.guardutils.duty.GuardDuty;
 
 import co.killionrevival.killioncommons.ui.items.MySimpleItem;
 import co.killionrevival.killioncommons.ui.panels.Panel;
@@ -15,13 +15,12 @@ public class GuardConfirmPanel extends Panel {
 
   public GuardConfirmPanel(Player player, boolean goingOffDuty) {
     super(player, (goingOffDuty == true) ? "Confirm: Go Off Duty (You will be killed)"
-    : "Confirm: Go On Duty (You will be killed)");
+        : "Confirm: Go On Duty (You will be killed)");
     this.player = player;
     this.goingOffDuty = goingOffDuty;
-
-    this.createGui();
   }
 
+  @Override
   protected Gui createGui() {
     return Gui.normal().setStructure(
         "@ ^ @ ^ @ ^ @ ^ @",

@@ -3,7 +3,6 @@ package com.flyerzrule.mc.guardutils.common.gui.panels;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import co.killionrevival.killioncommons.ui.items.BorderItem;
 import co.killionrevival.killioncommons.ui.items.BorderItemWithBack;
 import co.killionrevival.killioncommons.ui.items.MySimpleItem;
 import co.killionrevival.killioncommons.ui.panels.Panel;
@@ -17,7 +16,7 @@ public class HelpPanel extends Panel {
 
   @Override
   protected Gui createGui() {
-String swordHelp = "Requests that a player drops their sword";
+    String swordHelp = "Requests that a player drops their sword";
     String bowHelp = "Requests that a player drops their bow";
     String[] otherContrabandHelp = new String[] { "Requests that a player drops their other contraband.",
         "You will need to specify the item type (There is autocomplete)." };
@@ -55,5 +54,5 @@ String swordHelp = "Requests that a player drops their sword";
     MainPanel mainPanel = new MainPanel(this.player);
     mainPanel.open();
   }
-  
+
 }

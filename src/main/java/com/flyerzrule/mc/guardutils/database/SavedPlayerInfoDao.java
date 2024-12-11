@@ -12,7 +12,6 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.database.models.GuardStats;
 import com.flyerzrule.mc.guardutils.database.models.SavedPlayerInfo;
 import com.flyerzrule.mc.guardutils.duty.models.CLAN_RANK;
 import com.flyerzrule.mc.guardutils.duty.models.RANK;
@@ -26,6 +25,7 @@ public class SavedPlayerInfoDao extends DataAccessObject<SavedPlayerInfo> {
     createRankEnum();
     createClanRankEnum();
     createSavedPlayerInfoTable();
+    GuardUtils.getMyLogger().sendDebug("SavedPlayerInfoDao created");
   }
 
   public static SavedPlayerInfoDao getInstance() {
@@ -58,7 +58,7 @@ public class SavedPlayerInfoDao extends DataAccessObject<SavedPlayerInfo> {
   }
 
   private void createSavedPlayerInfoTable() {
-    String query = "CREATE TABLE IF NOT EXISTS guard_utils.saved_player_info (uuid TEXT PRIMARY KEY, rank RANK, clan_tag TEXT, clan_rank CLAN_RANK, clan_join_date BIGINT,time_start_duty TIMESTAMP);";
+    String query = "CREATE TABLE IF NOT EXISTS guard_utils.saved_player_info (uuid TEXT PRIMARY KEY, rank guard_utils.RANK, clan_tag TEXT, clan_rank guard_utils.CLAN_RANK, clan_join_date BIGINT,time_start_duty TIMESTAMP);";
     try {
       executeQuery(query);
     } catch (Exception e) {

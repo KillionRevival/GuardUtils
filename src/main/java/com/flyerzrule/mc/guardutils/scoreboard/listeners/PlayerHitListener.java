@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
-import com.flyerzrule.mc.guardutils.scoreboard.GuardScoreboard;
+import com.flyerzrule.mc.guardutils.scoreboard.GuardHitsManager;
 
 public class PlayerHitListener implements Listener {
     @EventHandler
@@ -22,7 +22,7 @@ public class PlayerHitListener implements Listener {
         GuardUtils.getMyLogger().sendDebug(String.format("%s has hit %s!", attackingPlayer.getName(),
                 damagedPlayer.getName()));
 
-        GuardScoreboard guardScoreboard = GuardScoreboard.getInstance();
+        GuardHitsManager guardScoreboard = GuardHitsManager.getInstance();
         guardScoreboard.addAttack(damagedPlayer, attackingPlayer);
     }
 }

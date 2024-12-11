@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
-import com.flyerzrule.mc.guardutils.duty.utils.GuardDuty;
+import com.flyerzrule.mc.guardutils.duty.GuardDuty;
 
 public class GuardKillDeathListener implements Listener {
   @EventHandler

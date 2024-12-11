@@ -2,12 +2,18 @@ package com.flyerzrule.mc.guardutils;
 
 import java.util.Objects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.flyerzrule.mc.guardutils.armor.listeners.EnitityEquipmentListener;
 import com.flyerzrule.mc.guardutils.armorstands.ArmorStandManager;
+import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
+import com.flyerzrule.mc.guardutils.database.SavedPlayerInfoDao;
+import com.flyerzrule.mc.guardutils.database.SettingsDao;
+import com.flyerzrule.mc.guardutils.database.UserSettingsDao;
+import com.flyerzrule.mc.guardutils.database.models.GuardStats;
 import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
 import com.flyerzrule.mc.guardutils.duty.commands.RegisterAsGuardCommand;
 import com.flyerzrule.mc.guardutils.duty.commands.ResignFromGuardCommand;
@@ -23,8 +29,10 @@ import com.flyerzrule.mc.guardutils.requests.commands.SwordCommand;
 import com.flyerzrule.mc.guardutils.requests.commands.tabcomplete.OtherContrabandTabComplete;
 import com.flyerzrule.mc.guardutils.requests.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.requests.listeners.DroppedItemListener;
+import com.flyerzrule.mc.guardutils.scoreboard.GuardHitsScoreboard;
 import com.flyerzrule.mc.guardutils.scoreboard.listeners.PlayerHitListener;
 
+import co.killionrevival.killioncommons.KillionCommons;
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 import lombok.Getter;
@@ -60,11 +68,15 @@ public class GuardUtils extends JavaPlugin {
     killionUtilities = new KillionUtilities(this);
     myLogger = killionUtilities.getConsoleUtil();
 
+    initDaos();
+
     luckperms = LuckPermsProvider.get();
 
     protocolManager = ProtocolLibrary.getProtocolManager();
 
     simpleClans = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
+
+    KillionCommons.getInstance().getScoreboardManager().registerAddition(this, new GuardHitsScoreboard());
 
     registerProtocolListeners();
 
@@ -82,6 +94,8 @@ public class GuardUtils extends JavaPlugin {
   @Override
   public void onDisable() {
     ArmorStandManager.getInstance().removeAllArmorStands();
+    Bukkit.getScheduler().cancelTasks(this);
+
     myLogger.sendSuccess(this.pluginName + " has been disabled.");
   }
 
@@ -130,5 +144,12 @@ public class GuardUtils extends JavaPlugin {
     Structure.addGlobalIngredient('#', new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName("§r"));
     Structure.addGlobalIngredient('^', new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).setDisplayName("§r"));
     Structure.addGlobalIngredient('@', new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName("§r"));
+  }
+
+  private void initDaos() {
+    GuardStatsDao.getInstance();
+    SavedPlayerInfoDao.getInstance();
+    SettingsDao.getInstance();
+    UserSettingsDao.getInstance();
   }
 }

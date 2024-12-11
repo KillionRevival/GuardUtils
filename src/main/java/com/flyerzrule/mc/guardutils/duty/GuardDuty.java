@@ -1,4 +1,4 @@
-package com.flyerzrule.mc.guardutils.duty.utils;
+package com.flyerzrule.mc.guardutils.duty;
 
 import org.bukkit.entity.Player;
 

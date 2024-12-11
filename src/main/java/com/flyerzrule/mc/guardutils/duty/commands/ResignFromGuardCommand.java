@@ -5,8 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.guardutils.duty.GuardDuty;
 import com.flyerzrule.mc.guardutils.duty.gui.GuardConfirmPanel;
-import com.flyerzrule.mc.guardutils.duty.utils.GuardDuty;
 
 public class ResignFromGuardCommand implements CommandExecutor {
   public ResignFromGuardCommand() {

@@ -3,19 +3,22 @@ package com.flyerzrule.mc.guardutils.common.gui.panels;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import co.killionrevival.killioncommons.ui.items.BorderItemWithBack;
-import co.killionrevival.killioncommons.ui.items.MySimpleItem;
-import co.killionrevival.killioncommons.ui.panels.Panel;
 import xyz.xenondevs.invui.gui.Gui;
+import xyz.xenondevs.invui.window.Window;
+
+import com.flyerzrule.mc.guardutils.common.gui.panels.helper.Panel;
+import com.flyerzrule.mc.guardutils.common.gui.items.BorderItemWithBack;
+import com.flyerzrule.mc.guardutils.common.gui.items.MySimpleItem;
 
 public class HelpPanel extends Panel {
 
   public HelpPanel(Player player) {
     super(player, "Guard Help");
+
+    createGui();
   }
 
-  @Override
-  protected Gui createGui() {
+  private void createGui() {
     String swordHelp = "Requests that a player drops their sword";
     String bowHelp = "Requests that a player drops their bow";
     String[] otherContrabandHelp = new String[] { "Requests that a player drops their other contraband.",
@@ -26,7 +29,7 @@ public class HelpPanel extends Panel {
         "View the current KOS players, guard stats, ",
         "and toggle the guard scoreboard." };
 
-    return Gui.normal().setStructure(
+    this.gui = Gui.normal().setStructure(
         "@ ^ @ ^ @ ^ @ ^ @",
         "^ . . . . . . . ^",
         "@ . S . B . O . @",
@@ -34,11 +37,14 @@ public class HelpPanel extends Panel {
         "@ . . . . . . . @",
         "^ @ ^ @ ^ @ ^ @ ^")
         .addIngredient('^',
-            new BorderItemWithBack(Material.ORANGE_STAINED_GLASS_PANE, this::openMain))
+            new BorderItemWithBack(Material.ORANGE_STAINED_GLASS_PANE,
+                this::openMain))
         .addIngredient('@',
-            new BorderItemWithBack(Material.BLUE_STAINED_GLASS_PANE, this::openMain))
+            new BorderItemWithBack(Material.BLUE_STAINED_GLASS_PANE,
+                this::openMain))
         .addIngredient('S',
-            new MySimpleItem(Material.DIAMOND_SWORD, "/sword", new String[] { swordHelp }))
+            new MySimpleItem(Material.DIAMOND_SWORD, "/sword",
+                new String[] { swordHelp }))
         .addIngredient('B',
             new MySimpleItem(Material.BOW, "/bow", new String[] { bowHelp }))
         .addIngredient('O',
@@ -48,6 +54,8 @@ public class HelpPanel extends Panel {
         .addIngredient('G',
             new MySimpleItem(Material.CHAINMAIL_CHESTPLATE, "/guard", guardHelp))
         .build();
+
+    this.window = Window.single().setViewer(this.player).setGui(gui).setTitle(this.title).build();
   }
 
   private void openMain() {

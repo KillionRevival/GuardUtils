@@ -4,8 +4,19 @@ import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.incendo.cloud.annotations.AnnotationParser;
+import org.incendo.cloud.exception.NoPermissionException;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.meta.SimpleCommandMeta;
+import org.incendo.cloud.paper.PaperCommandManager;
+import org.incendo.cloud.paper.util.sender.PaperSimpleSenderMapper;
+import org.incendo.cloud.paper.util.sender.PlayerSource;
+import org.incendo.cloud.paper.util.sender.Source;
+import org.incendo.cloud.setting.ManagerSetting;
 
 import com.flyerzrule.mc.guardutils.armor.listeners.EnitityEquipmentListener;
 import com.flyerzrule.mc.guardutils.armorstands.ArmorStandManager;
@@ -13,21 +24,11 @@ import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
 import com.flyerzrule.mc.guardutils.database.SavedPlayerInfoDao;
 import com.flyerzrule.mc.guardutils.database.SettingsDao;
 import com.flyerzrule.mc.guardutils.database.UserSettingsDao;
-import com.flyerzrule.mc.guardutils.database.models.GuardStats;
 import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
-import com.flyerzrule.mc.guardutils.duty.commands.RegisterAsGuardCommand;
-import com.flyerzrule.mc.guardutils.duty.commands.ResignFromGuardCommand;
 import com.flyerzrule.mc.guardutils.duty.listeners.GuardKillDeathListener;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.invis.listeners.InvisibilityListener;
-import com.flyerzrule.mc.guardutils.kos.commands.KOSCommand;
-import com.flyerzrule.mc.guardutils.kos.commands.tabcomplete.KOSTabComplete;
 import com.flyerzrule.mc.guardutils.kos.listeners.PlayerDeathListener;
-import com.flyerzrule.mc.guardutils.requests.commands.BowCommand;
-import com.flyerzrule.mc.guardutils.requests.commands.OtherContrabandCommand;
-import com.flyerzrule.mc.guardutils.requests.commands.SwordCommand;
-import com.flyerzrule.mc.guardutils.requests.commands.tabcomplete.OtherContrabandTabComplete;
-import com.flyerzrule.mc.guardutils.requests.commands.tabcomplete.PlayerTabComplete;
 import com.flyerzrule.mc.guardutils.requests.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.scoreboard.GuardHitsScoreboard;
 import com.flyerzrule.mc.guardutils.scoreboard.listeners.PlayerHitListener;
@@ -35,10 +36,12 @@ import com.flyerzrule.mc.guardutils.scoreboard.listeners.PlayerHitListener;
 import co.killionrevival.killioncommons.KillionCommons;
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
+import io.leangen.geantyref.TypeToken;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import xyz.xenondevs.invui.InvUI;
 import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
@@ -60,6 +63,10 @@ public class GuardUtils extends JavaPlugin {
   private static ProtocolManager protocolManager;
   @Getter
   private static SimpleClans simpleClans;
+  @Getter
+  private static PaperCommandManager<Source> commandManager;
+  @Getter
+  private static AnnotationParser<Source> annotationParser;
 
   @Override
   public void onEnable() {
@@ -67,6 +74,8 @@ public class GuardUtils extends JavaPlugin {
     plugin = this;
     killionUtilities = new KillionUtilities(this);
     myLogger = killionUtilities.getConsoleUtil();
+
+    InvUI.getInstance().setPlugin(this);
 
     initDaos();
 
@@ -76,12 +85,12 @@ public class GuardUtils extends JavaPlugin {
 
     simpleClans = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
-    KillionCommons.getInstance().getScoreboardManager().registerAddition(this, new GuardHitsScoreboard());
+    // KillionCommons.getInstance().getScoreboardManager().registerAddition(this, new GuardHitsScoreboard());
 
     registerProtocolListeners();
 
     registerCommands();
-    registerTabComplete();
+    // registerTabComplete();
     registerListeners();
     registerGlobalIngredients();
 
@@ -99,29 +108,67 @@ public class GuardUtils extends JavaPlugin {
     myLogger.sendSuccess(this.pluginName + " has been disabled.");
   }
 
+  // private void registerCommands() {
+  //   getCommand("sword").setExecutor(new SwordCommand());
+  //   getCommand("bow").setExecutor(new BowCommand());
+  //   getCommand("cb").setExecutor(new OtherContrabandCommand());
+  //   getCommand("kos").setExecutor(new KOSCommand());
+  //   getCommand("guard").setExecutor(new GuardCommand());
+  //   getCommand("guardRegister").setExecutor(new RegisterAsGuardCommand());
+  //   getCommand("guardResign").setExecutor(new ResignFromGuardCommand());
+
+  //   myLogger.sendSuccess("Commands have been registered.");
+  // }
+
+  // private void registerTabComplete() {
+  //   PlayerTabComplete playerTabComplete = new PlayerTabComplete();
+  //   KOSTabComplete kosTabComplete = new KOSTabComplete();
+  //   OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
+
+  //   getCommand("sword").setTabCompleter(playerTabComplete);
+  //   getCommand("bow").setTabCompleter(playerTabComplete);
+  //   getCommand("cb").setTabCompleter(otherContrabandTabComplete);
+  //   getCommand("kos").setTabCompleter(kosTabComplete);
+
   private void registerCommands() {
-    getCommand("sword").setExecutor(new SwordCommand());
-    getCommand("bow").setExecutor(new BowCommand());
-    getCommand("cb").setExecutor(new OtherContrabandCommand());
-    getCommand("kos").setExecutor(new KOSCommand());
-    getCommand("guard").setExecutor(new GuardCommand());
-    getCommand("guardRegister").setExecutor(new RegisterAsGuardCommand());
-    getCommand("guardResign").setExecutor(new ResignFromGuardCommand());
+    commandManager = PaperCommandManager.builder(PaperSimpleSenderMapper.simpleSenderMapper())
+        .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
+        .buildOnEnable(this);
 
-    myLogger.sendSuccess("Commands have been registered.");
-  }
+    commandManager.settings().set(ManagerSetting.ALLOW_UNSAFE_REGISTRATION, true);
+    commandManager.settings().set(ManagerSetting.OVERRIDE_EXISTING_COMMANDS, true);
 
-  private void registerTabComplete() {
-    PlayerTabComplete playerTabComplete = new PlayerTabComplete();
-    KOSTabComplete kosTabComplete = new KOSTabComplete();
-    OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
+    commandManager.parameterInjectorRegistry().registerInjector(
+        TypeToken.get(Player.class),
+        (context, annotationAccessor) -> {
+          final Source sender = context.sender();
 
-    getCommand("sword").setTabCompleter(playerTabComplete);
-    getCommand("bow").setTabCompleter(playerTabComplete);
-    getCommand("cb").setTabCompleter(otherContrabandTabComplete);
-    getCommand("kos").setTabCompleter(kosTabComplete);
+          if (sender instanceof PlayerSource playerSource) {
+            return playerSource.source();
+          }
 
-    myLogger.sendSuccess("Tab completers have been registered.");
+          return null;
+        });
+
+    // Register exception handler for permissions
+    commandManager.exceptionController().registerHandler(NoPermissionException.class,
+        (context) -> {
+          String commandName = context.context().rawInput().toString().split(" ")[0].replaceFirst("^/", "");
+          CommandSender sender = context.context().sender().source();
+
+          if (commandName.equals("guard")) {
+            sender.sendMessage(
+                "You don't have permission to use this command! Please contact an admin if you would like to become a guard!");
+          } else {
+            sender.sendMessage("You don't have permission to use this command!");
+          }
+        });
+
+    annotationParser = new AnnotationParser<>(commandManager, Source.class, params -> SimpleCommandMeta.empty());
+    annotationParser.parse(new GuardCommand());
+
+    getLogger().info("Command manager initialized!");
+
   }
 
   private void registerListeners() {

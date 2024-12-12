@@ -1,41 +1,24 @@
 package com.flyerzrule.mc.guardutils.duty.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.incendo.cloud.annotations.Command;
+import org.incendo.cloud.annotations.CommandDescription;
+import org.incendo.cloud.annotations.Permission;
+import org.incendo.cloud.paper.util.sender.PlayerSource;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.common.gui.panels.MainPanel;
 
-public class GuardCommand implements CommandExecutor {
+public class GuardCommand {
   public GuardCommand() {
   }
 
-  @Override
-  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    if (!cmd.getName().equalsIgnoreCase("guard")) {
-      return true;
-    }
-
-    if (!(sender instanceof Player)) {
-      sender.sendMessage("You must be a player to use this command.");
-      return true;
-    }
-
-    Player player = (Player) sender;
-
-    if (!player.hasPermission("guardutils.guard")) {
-      sender.sendMessage(
-          "You do not have permission to use this command. If you would like to become a guard, please contact an admin.");
-      return true;
-    }
-
+  @Permission("guardutils.guard")
+  @Command(value = "guard", requiredSender = PlayerSource.class)
+  @CommandDescription("Opens the guard menu")
+  public void onCommand(Player player) {
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s is opening the guard menu", player.getName()));
-    
-    MainPanel mainPanel = new MainPanel(player);
-    mainPanel.open();
 
-    return true;
+    new MainPanel(player).open();
   }
 }

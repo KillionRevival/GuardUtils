@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'com.flyerzrule.mc.guardutils'
@@ -9,8 +8,8 @@ version = '1.0.0'
 
 def javaVersion = JavaVersion.VERSION_21
 def encoding = 'UTF-8'
-def paperVersion = '1.21.1-R0.1-SNAPSHOT'
-def mcVersion = '1.21.1'
+def paperVersion = '1.21.3-R0.1-SNAPSHOT'
+def mcVersion = '1.21.3'
 
 repositories {
     gradlePluginPortal()
@@ -51,7 +50,7 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${paperVersion}"
-    compileOnly "co.killionrevival:killioncommons:3.3.1-SNAPSHOT"
+    compileOnly "co.killionrevival:killioncommons:3.3.2-SNAPSHOT"
     compileOnly "net.luckperms:api:5.4"
     compileOnly 'com.mojang:authlib:1.5.25'
 
@@ -60,12 +59,17 @@ dependencies {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 
-    shadow 'xyz.xenondevs.invui:invui:1.43'
+    compileOnly 'xyz.xenondevs.invui:invui:1.43'
 
     compileOnly 'net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.19.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    implementation "org.incendo:cloud-annotations:2.0.0"
+    annotationProcessor "org.incendo:cloud-annotations:2.0.0"
+    implementation "org.incendo:cloud-paper:2.0.0-beta.10"
+    implementation("org.incendo:cloud-minecraft-extras:2.0.0-beta.10")
 }
 
 java {
@@ -78,22 +82,7 @@ tasks.withType(JavaCompile) {
 }
 
 tasks.processResources {
-    filesMatching('plugin.yml') {
+    filesMatching(['plugin.yml', 'paper-plugin.yml']) {
         expand (version: project.version, mcVersion: mcVersion)
     }
-}
-
-tasks.assemble {
-    dependsOn(tasks.shadowJar)
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
-}
-
-shadowJar {
-  configurations = [project.configurations.shadow]
-  archiveBaseName.set(project.name)
-  archiveVersion.set(project.version)
-  archiveClassifier.set('')
 }

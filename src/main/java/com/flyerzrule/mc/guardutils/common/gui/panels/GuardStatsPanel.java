@@ -3,14 +3,16 @@ package com.flyerzrule.mc.guardutils.common.gui.panels;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
 import com.flyerzrule.mc.guardutils.database.models.GuardStats;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
+import com.flyerzrule.mc.guardutils.common.gui.panels.helper.Panel;
+import com.flyerzrule.mc.guardutils.common.gui.items.MySimpleItem;
+import com.flyerzrule.mc.guardutils.common.gui.items.BorderItemWithBack;
 
-import co.killionrevival.killioncommons.ui.items.BorderItemWithBack;
-import co.killionrevival.killioncommons.ui.items.MySimpleItem;
-import co.killionrevival.killioncommons.ui.panels.Panel;
 import xyz.xenondevs.invui.gui.Gui;
+import xyz.xenondevs.invui.window.Window;
 
 public class GuardStatsPanel extends Panel {
   private final GuardStatsDao guardStatsDao;
@@ -19,10 +21,12 @@ public class GuardStatsPanel extends Panel {
     super(player, "Your Guard Stats");
 
     this.guardStatsDao = GuardStatsDao.getInstance();
+
+    createGui();
+    GuardUtils.getMyLogger().sendDebug("init GuardStatsPanel");
   }
 
-  @Override
-  protected Gui createGui() {
+  private void createGui() {
     GuardStats stats = this.guardStatsDao.getGuardStats(this.player);
 
     if (stats == null) {
@@ -39,7 +43,7 @@ public class GuardStatsPanel extends Panel {
     Double kda = (stats.getDeaths() == 0) ? 0.0 : stats.getKills() / stats.getDeaths();
     String kdaStr = String.format("K/D: %.2f", kda);
 
-    return Gui.normal().setStructure(
+    this.gui = Gui.normal().setStructure(
         "@ ^ @ ^ @ ^ @ ^ @",
         "^ . K . D . T . ^",
         "@ ^ @ ^ @ ^ @ ^ @")
@@ -52,11 +56,12 @@ public class GuardStatsPanel extends Panel {
         .addIngredient('T',
             new MySimpleItem(Material.CLOCK, "Guard Time: " + guardTime))
         .build();
+
+    this.window = Window.single().setViewer(this.player).setGui(gui).setTitle(this.title).build();
   }
 
   private void openMain() {
     MainPanel mainPanel = new MainPanel(this.player);
     mainPanel.open();
   }
-  
 }

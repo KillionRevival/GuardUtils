@@ -1,0 +1,31 @@
+name: GuardUtils
+version: ${version}
+main: com.flyerzrule.mc.guardutils.GuardUtils
+loader: com.flyerzrule.mc.guardutils.GuardUtilsLoader
+api-version: ${mcVersion}
+description: Plugin for making a guard's experience better 
+dependencies:
+  server:
+    KillionCommons:
+      load: BEFORE
+    SimpleClans:
+      load: BEFORE
+    LuckPerms:
+      load: BEFORE
+    ProtocolLib:
+      load: BEFORE
+    PacketWrapper:
+      load: BEFORE
+permissions:
+  guardutils.guard:
+    description: Allows the player to use the guard command
+    default: false
+  guardutils.admin:
+    description: Allows the player to change global guard settings
+    default: op
+  guardutils.canBeGuard:
+    description: Allows the player to become a guard
+    default: false
+  guardutils.player:
+    description: Allows the player to use the kos command to check the time left
+    default: true

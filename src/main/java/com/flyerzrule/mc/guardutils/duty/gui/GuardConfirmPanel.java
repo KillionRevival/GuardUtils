@@ -3,11 +3,12 @@ package com.flyerzrule.mc.guardutils.duty.gui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.flyerzrule.mc.guardutils.common.gui.panels.helper.Panel;
 import com.flyerzrule.mc.guardutils.duty.GuardDuty;
+import com.flyerzrule.mc.guardutils.common.gui.items.MySimpleItem;
 
-import co.killionrevival.killioncommons.ui.items.MySimpleItem;
-import co.killionrevival.killioncommons.ui.panels.Panel;
 import xyz.xenondevs.invui.gui.Gui;
+import xyz.xenondevs.invui.window.Window;
 
 public class GuardConfirmPanel extends Panel {
   private final Player player;
@@ -18,17 +19,20 @@ public class GuardConfirmPanel extends Panel {
         : "Confirm: Go On Duty (You will be killed)");
     this.player = player;
     this.goingOffDuty = goingOffDuty;
+
+    createGui();
   }
 
-  @Override
-  protected Gui createGui() {
-    return Gui.normal().setStructure(
+  private void createGui() {
+    this.gui = Gui.normal().setStructure(
         "@ ^ @ ^ @ ^ @ ^ @",
         "^ . . y . n . . ^",
         "@ ^ @ ^ @ ^ @ ^ @")
         .addIngredient('y', new MySimpleItem(Material.GREEN_WOOL, "CONFIRM", this::confirmDutyChange))
         .addIngredient('n', new MySimpleItem(Material.RED_WOOL, "CANCEL", this::cancelDutyChange))
         .build();
+
+    this.window = Window.single().setViewer(this.player).setGui(gui).setTitle(this.title).build();
   }
 
   private void confirmDutyChange() {

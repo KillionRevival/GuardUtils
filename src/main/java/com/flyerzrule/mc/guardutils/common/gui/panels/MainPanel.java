@@ -8,37 +8,58 @@ import com.flyerzrule.mc.guardutils.common.gui.items.InvisTagsType;
 import com.flyerzrule.mc.guardutils.common.gui.items.ScoreboardItem;
 import com.flyerzrule.mc.guardutils.utils.Permissions;
 
-import co.killionrevival.killioncommons.ui.items.MySimpleItem;
-import co.killionrevival.killioncommons.ui.panels.Panel;
 import xyz.xenondevs.invui.gui.Gui;
+import xyz.xenondevs.invui.window.Window;
+
+import com.flyerzrule.mc.guardutils.common.gui.items.MySimpleItem;
+import com.flyerzrule.mc.guardutils.common.gui.panels.helper.Panel;
 
 public class MainPanel extends Panel {
+
   public MainPanel(Player player) {
     super(player, "Guard Menu");
+
+    createGui();
   }
 
-  @Override
-  protected Gui createGui() {
+  private void createGui() {
     String settingsGuiLine = "^ . . . s . . . ^";
-    if (Permissions.hasPermission(player, "guardutils.admin")) {
+    if (Permissions.hasPermission(this.player, "guardutils.admin")) {
       settingsGuiLine = "^ . s . G . k . ^";
     }
 
-    return Gui.normal().setStructure(
+    this.gui = Gui.normal().setStructure(
         "@ ^ @ ^ @ ^ @ ^ @",
         "^ . . . . . . . ^",
         "@ . K . S . H . @",
         settingsGuiLine,
         "@ . . . . . . . @",
         "^ @ ^ @ ^ @ ^ @ ^")
-        .addIngredient('K', new MySimpleItem(Material.TARGET, "KOS Players", () -> new KosPanel(this.player).open()))
-        .addIngredient('S', new MySimpleItem(Material.DIAMOND_SWORD, "Guard Stats", () -> new GuardStatsPanel(this.player).open()))
-        .addIngredient('H', new MySimpleItem(Material.KNOWLEDGE_BOOK, "Help", () -> new HelpPanel(this.player).open()))
-        .addIngredient('s', new ScoreboardItem(player))
+        .addIngredient('K', new MySimpleItem(Material.TARGET, "KOS Players", this::openKosPanel))
+        .addIngredient('S', new MySimpleItem(Material.DIAMOND_SWORD, "Guard Stats", this::openGuardStatsPanel))
+        .addIngredient('H', new MySimpleItem(Material.KNOWLEDGE_BOOK, "Help", this::openHelpPanel))
+        .addIngredient('s', new ScoreboardItem(this.player))
         .addIngredient('G',
             new InvisTagsItem(InvisTagsType.GUARD))
         .addIngredient('k',
             new InvisTagsItem(InvisTagsType.KOS))
         .build();
+
+    this.window = Window.single().setViewer(this.player).setGui(gui).setTitle(this.title).build();
+  }
+
+  private void openKosPanel() {
+    KosPanel kosPanel = new KosPanel(this.player);
+    kosPanel.open();
+  }
+
+  private void openGuardStatsPanel() {
+    GuardStatsPanel guardStatsPanel = new GuardStatsPanel(this.player);
+    guardStatsPanel.open();
+  }
+
+  private void openHelpPanel() {
+    HelpPanel helpPanel = new HelpPanel(this.player);
+    helpPanel.open();
   }
 }

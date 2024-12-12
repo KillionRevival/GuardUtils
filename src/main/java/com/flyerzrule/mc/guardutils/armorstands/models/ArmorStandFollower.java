@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
+import com.flyerzrule.mc.guardutils.utils.Permissions;
 
 import net.kyori.adventure.text.Component;
 
@@ -88,10 +89,10 @@ public class ArmorStandFollower {
                 continue;
             }
 
-            if (player.hasPermission("guardutils.guard")) {
+            if (player.hasPermission(Permissions.GUARD)) {
                 this.showArmorStand(player);
             } else {
-                if (this.player.hasPermission("guardutils.guard")) {
+                if (this.player.hasPermission(Permissions.GUARD)) {
                     this.showArmorStand(player);
                 } else {
                     this.hideArmorStand(player);

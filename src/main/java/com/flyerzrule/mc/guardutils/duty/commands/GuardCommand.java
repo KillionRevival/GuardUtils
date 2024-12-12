@@ -8,12 +8,13 @@ import org.incendo.cloud.paper.util.sender.PlayerSource;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.common.gui.panels.MainPanel;
+import com.flyerzrule.mc.guardutils.utils.Permissions;
 
 public class GuardCommand {
   public GuardCommand() {
   }
 
-  @Permission("guardutils.guard")
+  @Permission(Permissions.GUARD)
   @Command(value = "guard", requiredSender = PlayerSource.class)
   @CommandDescription("Opens the guard menu")
   public void onCommand(Player player) {

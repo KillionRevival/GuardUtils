@@ -24,7 +24,7 @@ public class MainPanel extends Panel {
 
   private void createGui() {
     String settingsGuiLine = "^ . . . s . . . ^";
-    if (Permissions.hasPermission(this.player, "guardutils.admin")) {
+    if (Permissions.hasPermission(this.player, Permissions.ADMIN)) {
       settingsGuiLine = "^ . s . G . k . ^";
     }
 

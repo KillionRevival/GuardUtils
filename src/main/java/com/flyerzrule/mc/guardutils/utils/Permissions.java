@@ -9,6 +9,11 @@ import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeEqualityPredicate;
 
 public class Permissions {
+  public static final String ADMIN = "guardutils.admin";
+  public static final String CAN_BE_GUARD = "guardutils.canBeGuard";
+  public static final String PLAYER = "guardutils.player";
+  public static final String GUARD = "guardutils.guard";
+
   public static boolean hasPermission(Player player, String permission) {
     return player.hasPermission(permission);
   }

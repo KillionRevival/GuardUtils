@@ -14,6 +14,7 @@ import com.flyerzrule.mc.guardutils.database.SettingsDao;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.kos.KOSTimer;
 import com.flyerzrule.mc.guardutils.utils.Message;
+import com.flyerzrule.mc.guardutils.utils.Permissions;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -80,7 +81,7 @@ public class ArmorStandManager {
       @Override
       public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-          if (!player.hasPermission("guardutils.guard")) {
+          if (!player.hasPermission(Permissions.GUARD)) {
             if (kosTimer.isKOSTimerActive(player) && settingsDao.getKOSInvisTagSetting()) {
               Component tag = Message.formatMessage(NamedTextColor.RED, "KOS");
               addArmorStand(player, tag);

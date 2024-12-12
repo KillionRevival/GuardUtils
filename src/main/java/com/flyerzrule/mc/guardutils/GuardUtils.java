@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.units.qual.K;
 import org.incendo.cloud.annotations.AnnotationParser;
 import org.incendo.cloud.exception.NoPermissionException;
 import org.incendo.cloud.execution.ExecutionCoordinator;
@@ -28,7 +29,11 @@ import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
 import com.flyerzrule.mc.guardutils.duty.listeners.GuardKillDeathListener;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.invis.listeners.InvisibilityListener;
+import com.flyerzrule.mc.guardutils.kos.commands.KOSCommand;
 import com.flyerzrule.mc.guardutils.kos.listeners.PlayerDeathListener;
+import com.flyerzrule.mc.guardutils.requests.commands.BowCommand;
+import com.flyerzrule.mc.guardutils.requests.commands.OtherContrabandCommand;
+import com.flyerzrule.mc.guardutils.requests.commands.SwordCommand;
 import com.flyerzrule.mc.guardutils.requests.listeners.DroppedItemListener;
 import com.flyerzrule.mc.guardutils.scoreboard.GuardHitsScoreboard;
 import com.flyerzrule.mc.guardutils.scoreboard.listeners.PlayerHitListener;
@@ -108,28 +113,6 @@ public class GuardUtils extends JavaPlugin {
     myLogger.sendSuccess(this.pluginName + " has been disabled.");
   }
 
-  // private void registerCommands() {
-  //   getCommand("sword").setExecutor(new SwordCommand());
-  //   getCommand("bow").setExecutor(new BowCommand());
-  //   getCommand("cb").setExecutor(new OtherContrabandCommand());
-  //   getCommand("kos").setExecutor(new KOSCommand());
-  //   getCommand("guard").setExecutor(new GuardCommand());
-  //   getCommand("guardRegister").setExecutor(new RegisterAsGuardCommand());
-  //   getCommand("guardResign").setExecutor(new ResignFromGuardCommand());
-
-  //   myLogger.sendSuccess("Commands have been registered.");
-  // }
-
-  // private void registerTabComplete() {
-  //   PlayerTabComplete playerTabComplete = new PlayerTabComplete();
-  //   KOSTabComplete kosTabComplete = new KOSTabComplete();
-  //   OtherContrabandTabComplete otherContrabandTabComplete = new OtherContrabandTabComplete();
-
-  //   getCommand("sword").setTabCompleter(playerTabComplete);
-  //   getCommand("bow").setTabCompleter(playerTabComplete);
-  //   getCommand("cb").setTabCompleter(otherContrabandTabComplete);
-  //   getCommand("kos").setTabCompleter(kosTabComplete);
-
   private void registerCommands() {
     commandManager = PaperCommandManager.builder(PaperSimpleSenderMapper.simpleSenderMapper())
         .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
@@ -166,9 +149,12 @@ public class GuardUtils extends JavaPlugin {
 
     annotationParser = new AnnotationParser<>(commandManager, Source.class, params -> SimpleCommandMeta.empty());
     annotationParser.parse(new GuardCommand());
+    annotationParser.parse(new KOSCommand());
+    annotationParser.parse(new SwordCommand());
+    annotationParser.parse(new BowCommand());
+    annotationParser.parse(new OtherContrabandCommand());
 
     getLogger().info("Command manager initialized!");
-
   }
 
   private void registerListeners() {

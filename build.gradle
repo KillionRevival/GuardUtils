@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.flyerzrule.mc.guardutils'
-version = '1.0.1'
+version = '1.0.2'
 
 def javaVersion = JavaVersion.VERSION_21
 def encoding = 'UTF-8'

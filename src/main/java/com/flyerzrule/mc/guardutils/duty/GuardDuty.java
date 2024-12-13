@@ -34,6 +34,7 @@ public class GuardDuty {
     ClanPlayer clanPlayer = sc.getClanManager().getClanPlayer(player);
 
     RANK rank = GuardDuty.getRank(player);
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s's rank is %s", player.getName(), rank.getName()));
 
     String clanTag = "";
     CLAN_RANK clanRank = CLAN_RANK.UNKNOWN;
@@ -67,12 +68,15 @@ public class GuardDuty {
       GuardUtils.getMyLogger().sendDebug(String.format("Player %s is not in a clan", player.getName()));
     }
 
-    if (clanPlayer == null) {
-      clanPlayer = new ClanPlayer(player.getUniqueId());
-    }
     // Put the player in the G clan
+    // Create the clan player if it doesn't exist
+    if (clanPlayer == null) {
+      clanPlayer = sc.getClanManager().getCreateClanPlayer(player.getUniqueId());
+    }
+
     Clan guardClan = sc.getClanManager().getClan("G");
     guardClan.addPlayerToClan(clanPlayer);
+
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s added to G clan", player.getName()));
 
     // Add the LP guard group to the player and remove their old group
@@ -161,6 +165,7 @@ public class GuardDuty {
 
   public static RANK getRank(Player player) {
     List<String> groups = Permissions.getGroups(player);
+    GuardUtils.getMyLogger().sendDebug(String.format("Player %s's groups are %s", player.getName(), groups));
     if (groups.contains(RANK.CITIZEN.getGroupName())) {
       return RANK.CITIZEN;
     } else if (groups.contains(RANK.FREE.getGroupName())) {

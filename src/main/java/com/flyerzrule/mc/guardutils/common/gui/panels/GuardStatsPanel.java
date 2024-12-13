@@ -3,7 +3,6 @@ package com.flyerzrule.mc.guardutils.common.gui.panels;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
 import com.flyerzrule.mc.guardutils.database.models.GuardStats;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;

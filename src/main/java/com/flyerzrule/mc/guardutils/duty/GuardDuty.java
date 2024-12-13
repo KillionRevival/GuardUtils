@@ -24,7 +24,6 @@ public class GuardDuty {
   private static final String GUARD_GROUP = "guard";
 
   public static void becomeGuard(Player player) {
-    // TODO: Make sure the switch does not effect DTR
     if (isOnDuty(player)) {
       GuardUtils.getMyLogger().sendError(String.format("Player %s is already on duty!", player.getName()));
       return;
@@ -103,7 +102,6 @@ public class GuardDuty {
   }
 
   public static void becomePlayer(Player player) {
-    // TODO: Make sure the switch does not effect DTR
     if (!isOnDuty(player)) {
       GuardUtils.getMyLogger().sendError(String.format("Player %s is not on duty!", player.getName()));
       return;

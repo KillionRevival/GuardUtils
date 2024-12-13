@@ -79,12 +79,13 @@ public class GuardDuty {
 
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s added to G clan", player.getName()));
 
-    // Add the LP guard group to the player and remove their old group
-    Permissions.replaceGroup(player, rank.getGroupName(), GUARD_GROUP);
-
     // Kill the player
+    // This needs to be done before the player is added to the guard group, or they wont drop their items
     player.setHealth(0.0);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a guard", player.getName()));
+
+    // Add the LP guard group to the player and remove their old group
+    Permissions.replaceGroup(player, rank.getGroupName(), GUARD_GROUP);
 
     if (!guardStatsDao.hasGuardStats(player)) {
       guardStatsDao.addNewGuardStats(player);

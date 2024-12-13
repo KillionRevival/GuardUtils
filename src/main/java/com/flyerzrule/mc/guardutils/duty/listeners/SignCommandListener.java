@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.duty.GuardDuty;
 import com.flyerzrule.mc.guardutils.duty.gui.GuardConfirmPanel;
+import com.flyerzrule.mc.guardutils.duty.models.RANK;
 import com.flyerzrule.mc.guardutils.duty.models.SignCommands;
 import com.flyerzrule.mc.guardutils.utils.Permissions;
 
@@ -38,6 +39,13 @@ public class SignCommandListener implements Listener {
 
       if (SignCommands.COMMANDS.contains(line1Contents) && !player.hasPermission(Permissions.CAN_BE_GUARD)) {
         player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+        return;
+      }
+
+      // Check if the player is the either Free or Citizen rank
+      if (!Permissions.getGroups(player).contains(RANK.FREE.getGroupName())
+          && !Permissions.getGroups(player).contains(RANK.CITIZEN.getGroupName())) {
+        player.sendMessage(ChatColor.RED + "You must be Free or Citizen to use this command.");
         return;
       }
 

@@ -67,6 +67,9 @@ public class GuardDuty {
       GuardUtils.getMyLogger().sendDebug(String.format("Player %s is not in a clan", player.getName()));
     }
 
+    if (clanPlayer == null) {
+      clanPlayer = new ClanPlayer(player.getUniqueId());
+    }
     // Put the player in the G clan
     Clan guardClan = sc.getClanManager().getClan("G");
     guardClan.addPlayerToClan(clanPlayer);

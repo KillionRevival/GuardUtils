@@ -56,8 +56,6 @@ public class BowCommand {
 
   @Suggestions("player")
   public List<String> getPlayerSuggestions(final CommandContext<PlayerSource> context) {
-    Player player = context.sender().source();
-
-    return ChatUtils.getOnlinePlayers(player, context.rawInput().toString());
+    return ChatUtils.getOnlinePlayers(context);
   }
 }

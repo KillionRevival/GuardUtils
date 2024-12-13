@@ -67,7 +67,7 @@ public class SavedPlayerInfoDao extends DataAccessObject<SavedPlayerInfo> {
   }
 
   public void addPlayerInfo(SavedPlayerInfo savedPlayerInfo) {
-    String query = "INSERT INTO guard_utils.saved_player_info (uuid, rank, clan_tag, clan_rank, clan_join_date, time_start_duty) VALUES (?, ?, ?, ?, ?, NOW());";
+    String query = "INSERT INTO guard_utils.saved_player_info (uuid, rank, clan_tag, clan_rank, clan_join_date, time_start_duty) VALUES (?, CAST(? AS guard_utils.RANK), ?, CAST(? AS guard_utils.CLAN_RANK), ?, NOW());";
     try {
       executeUpdate(query, savedPlayerInfo.getUuid(), savedPlayerInfo.getRank().getName(), savedPlayerInfo.getClanTag(),
           savedPlayerInfo.getClanRank().getName(), savedPlayerInfo.getClanJoinDate());

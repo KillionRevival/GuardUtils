@@ -44,46 +44,52 @@ public class OtherContrabandCommand {
 
     List<Item> otherPossibleContraband = Utils.getContrandTypeItems(ContrabandType.OTHER);
 
-    Item contrabandItem = otherPossibleContraband.stream()
-        .filter((ele) -> ele.getName().equals(item)).findFirst().orElse(null);
+    List<Item> contrabandItems = otherPossibleContraband.stream()
+        .filter((ele) -> ele.getName().equals(item)).collect(Collectors.toList());
 
-    if (contrabandItem == null) {
+    if (contrabandItems == null || contrabandItems.isEmpty()) {
       TextComponent message = Message.formatMessage(NamedTextColor.RED,
           "That is not a valid contraband item.");
       sender.sendMessage(message);
       return;
     }
 
-    if (Utils.hasOtherContrabandItemInInventory(player, contrabandItem)) {
-      TextComponent message = Message.formatMessage(NamedTextColor.DARK_PURPLE,
-          String.format(
-              "Drop your %s or you will be sent to solitary for breaking the rules!",
-              contrabandItem.getName()));
-      player.sendMessage(message);
+    for (Item contrabandItem : contrabandItems) {
+      if (Utils.hasOtherContrabandItemInInventory(player, contrabandItem)) {
+        TextComponent message = Message.formatMessage(NamedTextColor.DARK_PURPLE,
+            String.format(
+                "Drop your %s or you will be sent to solitary for breaking the rules!",
+                contrabandItem.getName()));
+        player.sendMessage(message);
 
-      Requests requests = Requests.getInstance();
-      requests.addRequest(player, guard, ContrabandType.OTHER, contrabandItem);
-    } else {
-      TextComponent message = Message.formatMessage(NamedTextColor.RED,
-          String.format("%s does not have a %s in their inventory!", player.getName(),
-              contrabandItem.getName()));
-      guard.sendMessage(message);
+        Requests requests = Requests.getInstance();
+        requests.addRequest(player, guard, ContrabandType.OTHER, contrabandItem);
+
+        return;
+      }
     }
+
+    TextComponent message = Message.formatMessage(NamedTextColor.RED,
+        String.format("%s does not have a %s in their inventory!", player.getName(),
+            item));
+    guard.sendMessage(message);
   }
 
   @Suggestions("player")
   public List<String> getPlayerSuggestions(final CommandContext<PlayerSource> context) {
-    Player player = context.sender().source();
-
-    return ChatUtils.getOnlinePlayers(player, context.rawInput().toString());
+    return ChatUtils.getOnlinePlayers(context);
   }
 
   @Suggestions("item")
-  public List<String> getOtherContrabandSuggestions(final CommandContext<CommandSender> context) {
+  public List<String> getOtherContrabandSuggestions(final CommandContext<PlayerSource> context) {
     List<Item> otherPossibleContraband = Utils.getContrandTypeItems(ContrabandType.OTHER);
-    return otherPossibleContraband.stream()
+
+    String input = ChatUtils.getArgumentValue(context);
+
+    List<String> possibleItems = otherPossibleContraband.stream()
         .map(Item::getName)
-        .filter(name -> name.toLowerCase().startsWith(context.rawInput().toString()))
         .collect(Collectors.toList());
+
+    return ChatUtils.filterListByPrefix(possibleItems, input);
   }
 }

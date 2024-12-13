@@ -14,6 +14,7 @@ import com.flyerzrule.mc.guardutils.duty.gui.GuardConfirmPanel;
 import com.flyerzrule.mc.guardutils.duty.models.SignCommands;
 import com.flyerzrule.mc.guardutils.utils.Permissions;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 
 public class SignCommandListener implements Listener {
@@ -30,7 +31,9 @@ public class SignCommandListener implements Listener {
 
       Sign sign = (Sign) event.getClickedBlock().getState();
 
-      String line1Contents = ChatColor.stripColor(sign.getSide(Side.FRONT).line(0).toString());
+      String line1Contents = PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(0));
+      line1Contents = ChatColor.stripColor(line1Contents);
+
       Player player = event.getPlayer();
 
       if (SignCommands.COMMANDS.contains(line1Contents) && !player.hasPermission(Permissions.ADMIN)) {
@@ -50,13 +53,14 @@ public class SignCommandListener implements Listener {
         // Open confirmation GUI
         new GuardConfirmPanel(player, false).open();
       } else if (line1Contents.equals(SignCommands.RESIGN_COMMAND)) {
-        if (GuardDuty.isOnDuty(player)) {
+        if (!GuardDuty.isOnDuty(player)) {
           player.sendMessage("You are not on duty!");
           return;
         }
 
         GuardUtils.getMyLogger().sendDebug(String.format("Player %s clicked the resign sign", player.getName()));
 
+        event.setCancelled(true);
         // Open confirmation GUI
         new GuardConfirmPanel(player, true).open();
       }

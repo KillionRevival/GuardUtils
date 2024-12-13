@@ -39,7 +39,7 @@ public class InvisTagsItem extends AbstractItem {
   public ItemProvider getItemProvider() {
     String typeStr = (type == InvisTagsType.GUARD) ? "Guard" : "KOS";
 
-    String title = "Toggle " + typeStr + " Invis Tags";
+    String title = "Toggle " + typeStr + " Tags";
     String state = "State: " + (isEnabled ? "Enabled" : "Disabled");
     String info = "Global (Admin Only)";
 

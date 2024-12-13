@@ -40,7 +40,7 @@ public class GuardStatsPanel extends Panel {
     } else {
       guardTime = TimeUtils.getFormattedTimeFromSeconds(stats.getGuardTime());
     }
-    Double kda = (stats.getDeaths() == 0) ? 0.0 : stats.getKills() / stats.getDeaths();
+    Double kda = (stats.getDeaths() == 0) ? (double) stats.getKills() : stats.getKills() / stats.getDeaths();
     String kdaStr = String.format("K/D: %.2f", kda);
 
     this.gui = Gui.normal().setStructure(

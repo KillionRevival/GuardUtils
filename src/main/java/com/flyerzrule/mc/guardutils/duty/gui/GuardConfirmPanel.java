@@ -15,8 +15,8 @@ public class GuardConfirmPanel extends Panel {
   private final boolean goingOffDuty;
 
   public GuardConfirmPanel(Player player, boolean goingOffDuty) {
-    super(player, (goingOffDuty == true) ? "Confirm: Go Off Duty (You will be killed)"
-        : "Confirm: Go On Duty (You will be killed)");
+    super(player, (goingOffDuty == true) ? "Confirm: Go Off Duty"
+        : "Confirm: Go On Duty");
     this.player = player;
     this.goingOffDuty = goingOffDuty;
 
@@ -28,7 +28,9 @@ public class GuardConfirmPanel extends Panel {
         "@ ^ @ ^ @ ^ @ ^ @",
         "^ . . y . n . . ^",
         "@ ^ @ ^ @ ^ @ ^ @")
-        .addIngredient('y', new MySimpleItem(Material.GREEN_WOOL, "CONFIRM", this::confirmDutyChange))
+        .addIngredient('y',
+            new MySimpleItem(Material.GREEN_WOOL, "CONFIRM", new String[] { "You will be killed!" },
+                this::confirmDutyChange))
         .addIngredient('n', new MySimpleItem(Material.RED_WOOL, "CANCEL", this::cancelDutyChange))
         .build();
 

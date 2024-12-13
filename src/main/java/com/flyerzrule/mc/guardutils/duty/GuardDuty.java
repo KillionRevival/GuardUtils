@@ -1,5 +1,7 @@
 package com.flyerzrule.mc.guardutils.duty;
 
+import java.util.List;
+
 import org.bukkit.entity.Player;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
@@ -8,6 +10,7 @@ import com.flyerzrule.mc.guardutils.database.SavedPlayerInfoDao;
 import com.flyerzrule.mc.guardutils.database.models.SavedPlayerInfo;
 import com.flyerzrule.mc.guardutils.duty.models.CLAN_RANK;
 import com.flyerzrule.mc.guardutils.duty.models.RANK;
+import com.flyerzrule.mc.guardutils.utils.Permissions;
 import com.flyerzrule.mc.guardutils.utils.time.TimeUtils;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
@@ -17,6 +20,8 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 public class GuardDuty {
   private static final GuardStatsDao guardStatsDao = GuardStatsDao.getInstance();
   private static final SavedPlayerInfoDao savedPlayerInfoDao = SavedPlayerInfoDao.getInstance();
+
+  private static final String GUARD_GROUP = "guard";
 
   public static void becomeGuard(Player player) {
     // TODO: Make sure the switch does not effect DTR
@@ -28,19 +33,18 @@ public class GuardDuty {
     SimpleClans sc = GuardUtils.getSimpleClans();
     ClanPlayer clanPlayer = sc.getClanManager().getClanPlayer(player);
 
-    if (clanPlayer == null) {
-      GuardUtils.getMyLogger().sendError(String.format("Cannot get clan player for %s", player.getName()));
-      return;
-    }
+    RANK rank = GuardDuty.getRank(player);
 
     String clanTag = "";
     CLAN_RANK clanRank = CLAN_RANK.UNKNOWN;
-    RANK rank = GuardDuty.getRank(player);
-    Clan clan = clanPlayer.getClan();
+    Clan clan = null;
+    if (clanPlayer != null) {
+      clan = clanPlayer.getClan();
+    }
     long clanJoinDate = -1;
 
     // If the player is currently in a clan
-    if (clan != null) {
+    if (clanPlayer != null && clan != null) {
       clanTag = clan.getTag();
       clanJoinDate = clanPlayer.getJoinDate();
       GuardUtils.getMyLogger().sendDebug("Clan tag: " + clanTag);
@@ -52,19 +56,24 @@ public class GuardDuty {
         clanRank = CLAN_RANK.UNTRUSTED;
       }
       GuardUtils.getMyLogger()
-          .sendDebug(String.format("Player %s is currently in clan %s with the rank %s with join date %d", clanTag,
+          .sendDebug(String.format("Player %s is currently in clan %s with the rank %s with join date %d",
+              player.getName(), clanTag,
               clanRank.getName(), clanJoinDate));
+
+      // Remove the player from their old clan
+      clan.removePlayerFromClan(player.getUniqueId());
+      GuardUtils.getMyLogger().sendDebug(String.format("Player %s removed from their old clan", player.getName()));
     } else {
       GuardUtils.getMyLogger().sendDebug(String.format("Player %s is not in a clan", player.getName()));
     }
 
     // Put the player in the G clan
     Clan guardClan = sc.getClanManager().getClan("G");
-    clanPlayer.setClan(guardClan);
+    guardClan.addPlayerToClan(clanPlayer);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s added to G clan", player.getName()));
 
     // Add the LP guard group to the player and remove their old group
-    // TODO: Implement
+    Permissions.replaceGroup(player, rank.getGroupName(), GUARD_GROUP);
 
     // Kill the player
     player.setHealth(0.0);
@@ -102,19 +111,27 @@ public class GuardDuty {
       return;
     }
 
-    // Remove the player from the G clan and add them back to their clan
-    Clan pClan = sc.getClanManager().getClan(playerInfo.getClanTag());
-    clanPlayer.setClan(pClan);
-    clanPlayer.setJoinDate(playerInfo.getClanJoinDate());
-    if (playerInfo.getClanRank().equals(CLAN_RANK.LEADER)) {
-      clanPlayer.setLeader(true);
-      clanPlayer.setTrusted(true);
-    } else if (playerInfo.getClanRank().equals(CLAN_RANK.TRUSTED)) {
-      clanPlayer.setLeader(false);
-      clanPlayer.setTrusted(true);
-    } else {
-      clanPlayer.setLeader(false);
-      clanPlayer.setTrusted(false);
+    Clan gClan = clanPlayer.getClan();
+    gClan.removePlayerFromClan(player.getUniqueId());
+
+    if (!playerInfo.getClanTag().isEmpty()) {
+
+      // Remove the player from the G clan and add them back to their clan
+      Clan pClan = sc.getClanManager().getClan(playerInfo.getClanTag());
+
+      pClan.addPlayerToClan(clanPlayer);
+
+      clanPlayer.setJoinDate(playerInfo.getClanJoinDate());
+      if (playerInfo.getClanRank().equals(CLAN_RANK.LEADER)) {
+        clanPlayer.setLeader(true);
+        clanPlayer.setTrusted(true);
+      } else if (playerInfo.getClanRank().equals(CLAN_RANK.TRUSTED)) {
+        clanPlayer.setLeader(false);
+        clanPlayer.setTrusted(true);
+      } else {
+        clanPlayer.setLeader(false);
+        clanPlayer.setTrusted(false);
+      }
     }
 
     // Update guard stats
@@ -123,7 +140,7 @@ public class GuardDuty {
     GuardUtils.getMyLogger().sendDebug(String.format("Guard stats for %s updated", player.getName()));
 
     // Set the player's rank to the rank they had before going on duty
-    // TODO: Implement
+    Permissions.replaceGroup(player, GUARD_GROUP, playerInfo.getRank().getGroupName());
 
     // Kill player
     player.setHealth(0.0);
@@ -140,7 +157,12 @@ public class GuardDuty {
   }
 
   public static RANK getRank(Player player) {
-    // TODO: Check the player's primary group and return the corresponding rank
+    List<String> groups = Permissions.getGroups(player);
+    if (groups.contains(RANK.CITIZEN.getGroupName())) {
+      return RANK.CITIZEN;
+    } else if (groups.contains(RANK.FREE.getGroupName())) {
+      return RANK.FREE;
+    }
     return RANK.UNKNOWN;
   }
 

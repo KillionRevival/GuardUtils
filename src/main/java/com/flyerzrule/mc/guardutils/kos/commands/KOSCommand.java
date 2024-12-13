@@ -1,6 +1,5 @@
 package com.flyerzrule.mc.guardutils.kos.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -35,7 +34,7 @@ public class KOSCommand {
   }
 
   @Permission(Permissions.GUARD)
-  @Command(value = "kos <time> <player>", requiredSender = PlayerSource.class)
+  @Command(value = "kos set <time> <player>", requiredSender = PlayerSource.class)
   @CommandDescription("Places a player on KOS for the specified amount of time.")
   public void handleRootKOSCommand(final CommandSender sender,
       @Argument(value = "time", suggestions = "time", description = "The amount of time to give the player.") final int time,
@@ -111,10 +110,10 @@ public class KOSCommand {
   @Command(value = "kos time [kosPlayer]", requiredSender = PlayerSource.class)
   @CommandDescription("Checks the time left on a player's KOS timer.")
   public void handleTimeCommand(final CommandSender sender,
-      @Argument(value = "kosPlayer", suggestions = "kosPlayer", description = "The player to check the KOS time of") @Default("") final String playerName) {
+      @Argument(value = "kosPlayer", suggestions = "kosPlayer", description = "The player to check the KOS time of") @Default("-") final String playerName) {
     Player senderPlayer = (Player) sender;
     Player player;
-    if (playerName.equals("")) {
+    if (playerName.equals("-")) {
       player = senderPlayer;
     } else {
       player = Bukkit.getPlayer(playerName);
@@ -149,48 +148,19 @@ public class KOSCommand {
     }
   }
 
-  @Permission(Permissions.PLAYER)
-  @Command(value = "kos", requiredSender = PlayerSource.class)
-  @CommandDescription("Gets your KOS timer information.")
-  public void handleNormalPlayerBaseCommand(final CommandSender sender) {
-    Player player = (Player) sender;
-
-    if (!kosTimer.isKOSTimerActive(player)) {
-      sender.sendMessage("You are not KOS!");
-      return;
-    }
-
-    long endTime = kosTimer.getKOSTimer(player);
-    long timeLeft = endTime - System.currentTimeMillis();
-    if (timeLeft > 0) {
-      MinSec minSec = TimeUtils.getMinutesAndSecondsFromMilli(timeLeft);
-      TextComponent response = Component.text().color(NamedTextColor.GOLD)
-          .content(
-              String.format("You have %d minutes and %d seconds left on KOS.",
-                  minSec.getMinutes(), minSec.getSeconds()))
-          .build();
-      sender.sendMessage(response);
-    } else {
-      TextComponent response = Component.text().color(NamedTextColor.GREEN)
-          .content("You have a KOS timer ending soom!").build();
-      sender.sendMessage(response);
-    }
-  }
-
   @Suggestions("time")
   public List<String> getTimeSuggestions(final CommandContext<PlayerSource> context) {
+    GuardUtils.getMyLogger().sendDebug("checking time suggestions");
     return List.of("5", "10");
   }
 
   @Suggestions("player")
   public List<String> getPlayerSuggestions(final CommandContext<PlayerSource> context) {
-    Player player = context.sender().source();
-
-    return ChatUtils.getOnlinePlayers(player, context.rawInput().toString());
+    return ChatUtils.getOnlinePlayers(context);
   }
 
   @Suggestions("kosPlayer")
   public List<String> getKosPlayerSuggestions(final CommandContext<PlayerSource> context) {
-    return kosTimer.getPlayerUsernamesOnKOS();
+    return ChatUtils.filterListByPrefix(kosTimer.getPlayerUsernamesOnKOS(), ChatUtils.getArgumentValue(context));
   }
 }

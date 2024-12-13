@@ -47,7 +47,7 @@ public class KOSCommand {
       return;
     }
 
-    if (time != 5 || time != 10) {
+    if (time != 5 && time != 10) {
       sender.sendMessage("Time must be 5 or 10.");
       return;
     }
@@ -178,22 +178,19 @@ public class KOSCommand {
   }
 
   @Suggestions("time")
-  public List<String> getTimeSuggestions(final CommandContext<CommandSender> context) {
-    List<String> suggestions = new ArrayList<>();
-    suggestions.add("5");
-    suggestions.add("10");
-    return suggestions;
+  public List<String> getTimeSuggestions(final CommandContext<PlayerSource> context) {
+    return List.of("5", "10");
   }
 
   @Suggestions("player")
-  public List<String> getPlayerSuggestions(final CommandContext<CommandSender> context) {
-    Player player = (Player) context.sender();
+  public List<String> getPlayerSuggestions(final CommandContext<PlayerSource> context) {
+    Player player = context.sender().source();
 
     return ChatUtils.getOnlinePlayers(player, context.rawInput().toString());
   }
 
   @Suggestions("kosPlayer")
-  public List<String> getKosPlayerSuggestions(final CommandContext<CommandSender> context) {
+  public List<String> getKosPlayerSuggestions(final CommandContext<PlayerSource> context) {
     return kosTimer.getPlayerUsernamesOnKOS();
   }
 }

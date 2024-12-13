@@ -56,7 +56,7 @@ public class UserSettingsDao extends DataAccessObject<UserSetting> {
   public void setScoreboardEnabled(String uuid, boolean newValue) {
     String query = "INSERT INTO guard_utils.user_settings (uuid, scoreboard_enabled) VALUES (?, ?) ON CONFLICT (uuid) DO UPDATE SET scoreboard_enabled = EXCLUDED.scoreboard_enabled;";
     try {
-      executeUpdate(query, newValue, uuid);
+      executeUpdate(query, uuid, newValue);
     } catch (Exception e) {
       GuardUtils.getMyLogger().sendThrowable(e);
     }

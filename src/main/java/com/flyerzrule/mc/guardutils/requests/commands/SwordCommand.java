@@ -1,6 +1,8 @@
 package com.flyerzrule.mc.guardutils.requests.commands;
 
+import java.security.Guard;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -13,12 +15,14 @@ import org.incendo.cloud.annotations.suggestion.Suggestions;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.paper.util.sender.PlayerSource;
 
+import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.requests.Requests;
 import com.flyerzrule.mc.guardutils.requests.models.ContrabandType;
 import com.flyerzrule.mc.guardutils.requests.utils.Utils;
 import com.flyerzrule.mc.guardutils.utils.ChatUtils;
 import com.flyerzrule.mc.guardutils.utils.Message;
 import com.flyerzrule.mc.guardutils.utils.Permissions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -56,9 +60,16 @@ public class SwordCommand {
   }
 
   @Suggestions("player")
-  public List<String> getPlayerSuggestions(final CommandContext<CommandSender> context) {
-    Player player = (Player) context.sender();
+  public CompletableFuture<com.mojang.brigadier.suggestion.Suggestions> getPlayerSuggestions(
+      final SuggestionsBuilder builder) {
+    String input = builder.getRemaining().toLowerCase();
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      String name = player.getName().toLowerCase();
+      if (name.startsWith(input)) {
+        builder.suggest(player.getName());
+      }
+    }
 
-    return ChatUtils.getOnlinePlayers(player, context.rawInput().toString());
+    return builder.buildFuture();
   }
 }

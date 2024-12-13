@@ -1,6 +1,5 @@
 package com.flyerzrule.mc.guardutils.duty.listeners;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;

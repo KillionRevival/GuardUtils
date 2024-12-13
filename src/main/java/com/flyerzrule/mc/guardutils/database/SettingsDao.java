@@ -88,7 +88,7 @@ public class SettingsDao extends DataAccessObject<Setting> {
   public void setKOSInvisTagSetting(boolean newValue) {
     String query = "INSERT INTO guard_utils.settings (setting, value) VALUES (?, ?) ON CONFLICT (setting) DO UPDATE SET value = EXCLUDED.value;";
     try {
-      executeUpdate(query, KOS_INVIS_TAG_KEY, newValue, newValue);
+      executeUpdate(query, KOS_INVIS_TAG_KEY, newValue);
     } catch (Exception e) {
       GuardUtils.getMyLogger().sendThrowable(e);
     }

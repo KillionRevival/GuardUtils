@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.units.qual.K;
 import org.incendo.cloud.annotations.AnnotationParser;
+import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
 import org.incendo.cloud.exception.NoPermissionException;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.meta.SimpleCommandMeta;
@@ -27,6 +28,8 @@ import com.flyerzrule.mc.guardutils.database.SettingsDao;
 import com.flyerzrule.mc.guardutils.database.UserSettingsDao;
 import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
 import com.flyerzrule.mc.guardutils.duty.listeners.GuardKillDeathListener;
+import com.flyerzrule.mc.guardutils.duty.listeners.SignCommandListener;
+import com.flyerzrule.mc.guardutils.duty.listeners.SignCreationListener;
 import com.flyerzrule.mc.guardutils.invis.InvisPlayers;
 import com.flyerzrule.mc.guardutils.invis.listeners.InvisibilityListener;
 import com.flyerzrule.mc.guardutils.kos.commands.KOSCommand;
@@ -95,7 +98,6 @@ public class GuardUtils extends JavaPlugin {
     registerProtocolListeners();
 
     registerCommands();
-    // registerTabComplete();
     registerListeners();
     registerGlobalIngredients();
 
@@ -146,6 +148,10 @@ public class GuardUtils extends JavaPlugin {
             sender.sendMessage("You don't have permission to use this command!");
           }
         });
+    commandManager.exceptionController().registerHandler(Exception.class, (context) -> {
+      Bukkit.getLogger().severe("Command exception: " + context.exception().getMessage());
+      context.context().sender().source().sendMessage("An error occurred while processing the command.");
+    });
 
     annotationParser = new AnnotationParser<>(commandManager, Source.class, params -> SimpleCommandMeta.empty());
     annotationParser.parse(new GuardCommand());
@@ -163,6 +169,8 @@ public class GuardUtils extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new InvisibilityListener(), this);
     getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
     getServer().getPluginManager().registerEvents(new GuardKillDeathListener(), this);
+    getServer().getPluginManager().registerEvents(new SignCreationListener(), this);
+    getServer().getPluginManager().registerEvents(new SignCommandListener(), this);
 
     myLogger.sendSuccess("Listeners have been registered.");
   }

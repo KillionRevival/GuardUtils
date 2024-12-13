@@ -44,7 +44,8 @@ public class SignCommandListener implements Listener {
 
       // Check if the player is the either Free or Citizen rank
       if (!Permissions.getGroups(player).contains(RANK.FREE.getGroupName())
-          && !Permissions.getGroups(player).contains(RANK.CITIZEN.getGroupName())) {
+          && !Permissions.getGroups(player).contains(RANK.CITIZEN.getGroupName())
+          && !Permissions.getGroups(player).contains("guard")) {
         player.sendMessage(ChatColor.RED + "You must be Free or Citizen to use this command.");
         return;
       }

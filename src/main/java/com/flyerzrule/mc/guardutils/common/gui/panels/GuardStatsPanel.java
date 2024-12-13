@@ -23,7 +23,6 @@ public class GuardStatsPanel extends Panel {
     this.guardStatsDao = GuardStatsDao.getInstance();
 
     createGui();
-    GuardUtils.getMyLogger().sendDebug("init GuardStatsPanel");
   }
 
   private void createGui() {

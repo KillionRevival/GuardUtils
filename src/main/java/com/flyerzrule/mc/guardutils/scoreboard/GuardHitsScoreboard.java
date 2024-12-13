@@ -59,7 +59,6 @@ public class GuardHitsScoreboard extends ScoreboardAddition {
     if (this.guard != null && GuardDuty.isOnDuty(this.guard)
         && userSettingsDao.getScoreboardEnabled(this.guard.getUniqueId().toString())) {
 
-      GuardUtils.getMyLogger().sendDebug(String.format(this.guard.getName()));
       Map<UUID, List<Long>> attackers = guardHitsManager.getAttacksForGuard(guard);
       List<Map.Entry<UUID, List<Long>>> sortedAttackers = new ArrayList<>(attackers.entrySet());
       sortedAttackers.sort((a, b) -> {
@@ -68,7 +67,9 @@ public class GuardHitsScoreboard extends ScoreboardAddition {
         return Long.compare(bLastHit, aLastHit);
       });
 
-      lines.add(Component.text("Recent Attacks: ").color(TextColor.color(0xFF0000)));
+      if (sortedAttackers.size() > 0) {
+        lines.add(Component.text("Recent Attacks: ").color(TextColor.color(0xFF0000)));
+      }
 
       for (Map.Entry<UUID, List<Long>> attacker : sortedAttackers) {
         UUID attackerUUID = attacker.getKey();

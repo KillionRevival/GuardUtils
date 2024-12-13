@@ -36,8 +36,10 @@ import com.flyerzrule.mc.guardutils.requests.commands.BowCommand;
 import com.flyerzrule.mc.guardutils.requests.commands.OtherContrabandCommand;
 import com.flyerzrule.mc.guardutils.requests.commands.SwordCommand;
 import com.flyerzrule.mc.guardutils.requests.listeners.DroppedItemListener;
+import com.flyerzrule.mc.guardutils.scoreboard.GuardHitsScoreboard;
 import com.flyerzrule.mc.guardutils.scoreboard.listeners.PlayerHitListener;
 
+import co.killionrevival.killioncommons.KillionCommons;
 import co.killionrevival.killioncommons.KillionUtilities;
 import co.killionrevival.killioncommons.util.console.ConsoleUtil;
 import io.leangen.geantyref.TypeToken;
@@ -89,7 +91,7 @@ public class GuardUtils extends JavaPlugin {
 
     simpleClans = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
 
-    // KillionCommons.getInstance().getScoreboardManager().registerAddition(this, new GuardHitsScoreboard());
+    KillionCommons.getInstance().getScoreboardManager().registerAddition(this, new GuardHitsScoreboard());
 
     registerProtocolListeners();
 

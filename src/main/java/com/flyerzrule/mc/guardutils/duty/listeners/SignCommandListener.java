@@ -37,6 +37,10 @@ public class SignCommandListener implements Listener {
 
       Player player = event.getPlayer();
 
+      if (!line1Contents.equals(SignCommands.REGISTER_COMMAND) && !line1Contents.equals(SignCommands.RESIGN_COMMAND)) {
+        return;
+      }
+
       if (SignCommands.COMMANDS.contains(line1Contents) && !player.hasPermission(Permissions.CAN_BE_GUARD)) {
         player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
         return;

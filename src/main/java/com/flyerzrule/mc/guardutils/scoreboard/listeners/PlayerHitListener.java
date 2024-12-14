@@ -23,6 +23,9 @@ public class PlayerHitListener implements Listener {
                 damagedPlayer.getName()));
 
         GuardHitsManager guardScoreboard = GuardHitsManager.getInstance();
-        guardScoreboard.addAttack(damagedPlayer, attackingPlayer);
+
+        if (!event.isCancelled()) {
+            guardScoreboard.addAttack(damagedPlayer, attackingPlayer);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.flyerzrule.mc.guardutils.duty.commands;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,6 +10,8 @@ import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Default;
 import org.incendo.cloud.annotations.Permission;
+import org.incendo.cloud.annotations.suggestion.Suggestions;
+import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.paper.util.sender.PlayerSource;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
@@ -15,6 +19,7 @@ import com.flyerzrule.mc.guardutils.database.SavedPlayerInfoDao;
 import com.flyerzrule.mc.guardutils.database.models.SavedPlayerInfo;
 import com.flyerzrule.mc.guardutils.duty.models.CLAN_RANK;
 import com.flyerzrule.mc.guardutils.duty.models.RANK;
+import com.flyerzrule.mc.guardutils.utils.ChatUtils;
 import com.flyerzrule.mc.guardutils.utils.Permissions;
 
 public class AddAdminGuardCommand {
@@ -60,5 +65,10 @@ public class AddAdminGuardCommand {
     GuardUtils.getMyLogger().sendInfo(String.format(
         "Added %s to the guard table. They no longer need to use the Guard signs. They will always be able to use the guard commands.",
         player.getName()));
+  }
+
+  @Suggestions("player")
+  public List<String> getPlayerSuggestions(final CommandContext<PlayerSource> context) {
+    return ChatUtils.getOnlinePlayers(context, true);
   }
 }

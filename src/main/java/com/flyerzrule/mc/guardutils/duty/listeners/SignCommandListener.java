@@ -54,6 +54,11 @@ public class SignCommandListener implements Listener {
         return;
       }
 
+      if (GuardDuty.isAdminOnDuty(player)) {
+        player.sendMessage(ChatColor.RED + "You are an admin and do not need to use this command.");
+        return;
+      }
+
       // Check if the sign contains the trigger text
       if (line1Contents.equals(SignCommands.REGISTER_COMMAND)) {
         if (GuardDuty.isOnDuty(player)) {

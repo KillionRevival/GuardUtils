@@ -22,6 +22,7 @@ public class GuardDuty {
   private static final SavedPlayerInfoDao savedPlayerInfoDao = SavedPlayerInfoDao.getInstance();
 
   private static final String GUARD_GROUP = "guard";
+  private static final String ADMIN_CLAN_TAG = "adminAccount";
 
   public static void becomeGuard(Player player) {
     if (isOnDuty(player)) {
@@ -160,6 +161,19 @@ public class GuardDuty {
 
   public static boolean isOnDuty(Player player) {
     return savedPlayerInfoDao.hasPlayerInfo(player);
+  }
+
+  public static boolean isAdminOnDuty(Player player) {
+    SavedPlayerInfo playerInfo = savedPlayerInfoDao.getPlayerInfo(player);
+
+    if (playerInfo == null) {
+      return false;
+    }
+
+    if (playerInfo.getClanTag().equals(ADMIN_CLAN_TAG)) {
+      return true;
+    }
+    return false;
   }
 
   public static RANK getRank(Player player) {

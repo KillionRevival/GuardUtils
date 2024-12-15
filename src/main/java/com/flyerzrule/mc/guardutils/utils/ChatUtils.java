@@ -10,14 +10,30 @@ import org.incendo.cloud.paper.util.sender.PlayerSource;
 
 public class ChatUtils {
   public static List<String> getOnlinePlayers(CommandContext<PlayerSource> context) {
+    return getOnlinePlayers(context, false);
+  }
+
+  public static List<String> getOnlinePlayers(CommandContext<PlayerSource> context, boolean includeCurrentPlayer) {
     Player currentPlayer = context.sender().source();
 
     String input = getArgumentValue(context);
 
     if (input.equals("")) {
+      if (includeCurrentPlayer) {
+        return Bukkit.getOnlinePlayers().stream()
+            .map(Player::getName)
+            .collect(Collectors.toList());
+      }
       return Bukkit.getOnlinePlayers().stream()
           .map(Player::getName)
           .filter(name -> !name.toLowerCase().equals(currentPlayer.getName().toLowerCase()))
+          .collect(Collectors.toList());
+    }
+
+    if (includeCurrentPlayer) {
+      return Bukkit.getOnlinePlayers().stream()
+          .map(Player::getName)
+          .filter(name -> name.toLowerCase().startsWith(input.toLowerCase()))
           .collect(Collectors.toList());
     }
 

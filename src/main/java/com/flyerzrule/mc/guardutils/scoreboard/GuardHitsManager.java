@@ -1,10 +1,11 @@
 package com.flyerzrule.mc.guardutils.scoreboard;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class GuardHitsManager {
   private final long hitTimeout;
 
   private GuardHitsManager() {
-    this.attackData = new HashMap<>();
+    this.attackData = new ConcurrentHashMap<>();
     this.hitTimeout = GuardUtils.getPlugin().getConfig().getInt("hit-timeout", 120) * 1000;
 
     new BukkitRunnable() {
@@ -34,7 +35,7 @@ public class GuardHitsManager {
     }.runTaskTimer(GuardUtils.getPlugin(), 0L, 20L); // Update every second
   }
 
-  public static GuardHitsManager getInstance() {
+  public static synchronized GuardHitsManager getInstance() {
     if (instance == null) {
       instance = new GuardHitsManager();
     }
@@ -42,24 +43,37 @@ public class GuardHitsManager {
   }
 
   public void addAttack(Player guard, Player attacker) {
-    this.attackData.putIfAbsent(guard.getUniqueId(), new HashMap<UUID, List<Long>>());
-
-    Map<UUID, List<Long>> attackers = attackData.get(guard.getUniqueId());
-    attackers.putIfAbsent(attacker.getUniqueId(), new ArrayList<Long>());
-    attackers.get(attacker.getUniqueId()).add(System.currentTimeMillis());
+    attackData.computeIfAbsent(guard.getUniqueId(), k -> new ConcurrentHashMap<>())
+        .computeIfAbsent(attacker.getUniqueId(), k -> Collections.synchronizedList(new ArrayList<>()))
+        .add(System.currentTimeMillis());
   }
 
   public void removeOldAttacks(Player guard) {
     Map<UUID, List<Long>> attacks = attackData.get(guard.getUniqueId());
+
+    if (attacks == null) {
+      return;
+    }
+
     long currentTime = System.currentTimeMillis();
+    List<UUID> toRemove = new ArrayList<>();
 
-    for (UUID attackerUUID : attacks.keySet()) {
-      List<Long> attackTimes = attacks.get(attackerUUID);
-      attackTimes.removeIf(time -> currentTime - time > hitTimeout);
+    synchronized (attacks) {
+      for (Map.Entry<UUID, List<Long>> entry : attacks.entrySet()) {
+        List<Long> attackTimes = entry.getValue();
+        attackTimes.removeIf(time -> currentTime - time > hitTimeout);
 
-      if (attackTimes.isEmpty()) {
-        attacks.remove(attackerUUID);
+        if (attackTimes.isEmpty()) {
+          toRemove.add(entry.getKey());
+        }
       }
+      for (UUID uuid : toRemove) {
+        attacks.remove(uuid);
+      }
+    }
+
+    if (attacks.isEmpty()) {
+      attackData.remove(guard.getUniqueId());
     }
   }
 

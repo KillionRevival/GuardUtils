@@ -19,10 +19,12 @@ public class PlayerHitListener implements Listener {
         Player damagedPlayer = (Player) event.getEntity();
         Player attackingPlayer = (Player) event.getDamager();
 
-        GuardUtils.getMyLogger().sendDebug(String.format("%s has hit %s!", attackingPlayer.getName(),
-                damagedPlayer.getName()));
-
         GuardHitsManager guardScoreboard = GuardHitsManager.getInstance();
-        guardScoreboard.addAttack(damagedPlayer, attackingPlayer);
+
+        if (!event.isCancelled()) {
+            GuardUtils.getMyLogger().sendDebug(String.format("%s has hit %s!", attackingPlayer.getName(),
+                    damagedPlayer.getName()));
+            guardScoreboard.addAttack(damagedPlayer, attackingPlayer);
+        }
     }
 }

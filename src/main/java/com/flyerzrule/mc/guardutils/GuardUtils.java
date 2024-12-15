@@ -24,6 +24,7 @@ import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
 import com.flyerzrule.mc.guardutils.database.SavedPlayerInfoDao;
 import com.flyerzrule.mc.guardutils.database.SettingsDao;
 import com.flyerzrule.mc.guardutils.database.UserSettingsDao;
+import com.flyerzrule.mc.guardutils.duty.commands.AddAdminGuardCommand;
 import com.flyerzrule.mc.guardutils.duty.commands.GuardCommand;
 import com.flyerzrule.mc.guardutils.duty.listeners.GuardKillDeathListener;
 import com.flyerzrule.mc.guardutils.duty.listeners.SignCommandListener;
@@ -157,6 +158,7 @@ public class GuardUtils extends JavaPlugin {
     annotationParser.parse(new SwordCommand());
     annotationParser.parse(new BowCommand());
     annotationParser.parse(new OtherContrabandCommand());
+    annotationParser.parse(new AddAdminGuardCommand());
 
     getLogger().info("Command manager initialized!");
   }

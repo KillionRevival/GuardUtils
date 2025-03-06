@@ -148,6 +148,11 @@ public class GuardDuty {
     // Set the player's rank to the rank they had before going on duty
     Permissions.replaceGroup(player, GUARD_GROUP, playerInfo.getRank().getGroupName());
 
+    // Clear the player's inventory
+    player.getInventory().clear();
+    player.getInventory().setArmorContents(null);
+    player.getInventory().setExtraContents(null);
+
     // Kill player
     player.setHealth(0.0);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a player", player.getName()));

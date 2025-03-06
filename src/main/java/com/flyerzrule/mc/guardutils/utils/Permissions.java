@@ -1,5 +1,6 @@
 package com.flyerzrule.mc.guardutils.utils;
 
+import java.security.Guard;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ public class Permissions {
       user.data().add(newNode);
 
       // Save changes to LuckPerms
-      luckPerms.getUserManager().saveUser(user);
+      saveUser(user);
     });
   }
 
@@ -61,7 +62,7 @@ public class Permissions {
       GuardUtils.getMyLogger().sendDebug(player.getName() + " is not in group '" + groupName + "'");
     }
 
-    luckPerms.getUserManager().saveUser(user);
+    saveUser(user);
   }
 
   public static void addGroup(Player player, String groupName) {
@@ -77,12 +78,39 @@ public class Permissions {
       GuardUtils.getMyLogger().sendDebug(player.getName() + " is already in group '" + groupName + "'");
     }
 
-    luckPerms.getUserManager().saveUser(user);
+    saveUser(user);
   }
 
   public static void replaceGroup(Player player, String oldGroupName, String newGroupName) {
-    removeGroup(player, oldGroupName);
-    addGroup(player, newGroupName);
+    GuardUtils.getMyLogger().sendDebug(
+        String.format("Replacing group %s with %s for player %s", oldGroupName, newGroupName, player.getName()));
+
+    User user = getUser(player);
+
+    Node removeNode = InheritanceNode.builder(oldGroupName).build();
+    Node addNode = InheritanceNode.builder(newGroupName).build();
+
+    if (!user.data().contains(addNode, NodeEqualityPredicate.EXACT).asBoolean()) {
+      user.data().add(addNode);
+      GuardUtils.getMyLogger().sendDebug("Added group '" + newGroupName + "' to " + player.getName());
+    } else {
+      GuardUtils.getMyLogger().sendDebug(player.getName() + " is already in group '" + newGroupName + "'");
+    }
+
+    if (user.data().contains(removeNode, NodeEqualityPredicate.EXACT).asBoolean()) {
+      user.data().remove(removeNode);
+      GuardUtils.getMyLogger().sendDebug("Removed group '" + oldGroupName + "' from " + player.getName());
+    } else {
+      GuardUtils.getMyLogger().sendDebug(player.getName() + " is not in group '" + oldGroupName + "'");
+    }
+
+    Node defaultNode = Node.builder("defaault").build();
+    if (user.data().contains(defaultNode, NodeEqualityPredicate.EXACT).asBoolean()) {
+      user.data().remove(defaultNode);
+      GuardUtils.getMyLogger().sendDebug("Removed default group from " + player.getName());
+    }
+
+    saveUser(user);
   }
 
   public static List<String> getGroups(Player player) {
@@ -96,5 +124,9 @@ public class Permissions {
 
   private static User getUser(Player player) {
     return luckPerms.getUserManager().loadUser(player.getUniqueId()).join();
+  }
+
+  private static void saveUser(User user) {
+    luckPerms.getUserManager().saveUser(user);
   }
 }

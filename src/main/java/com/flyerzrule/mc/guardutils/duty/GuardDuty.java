@@ -2,7 +2,10 @@ package com.flyerzrule.mc.guardutils.duty;
 
 import java.util.List;
 
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import com.flyerzrule.mc.guardutils.GuardUtils;
 import com.flyerzrule.mc.guardutils.database.GuardStatsDao;
@@ -80,7 +83,7 @@ public class GuardDuty {
 
     // Kill the player
     // This needs to be done before the player is added to the guard group, or they wont drop their items
-    player.setHealth(0.0);
+    killPlayer(player);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a guard", player.getName()));
 
     // Add the LP guard group to the player and remove their old group
@@ -154,7 +157,7 @@ public class GuardDuty {
     player.getInventory().setExtraContents(null);
 
     // Kill player
-    player.setHealth(0.0);
+    killPlayer(player);
     GuardUtils.getMyLogger().sendDebug(String.format("Player %s was killed to become a player", player.getName()));
 
     savedPlayerInfoDao.removePlayerInfo(player);
@@ -184,5 +187,10 @@ public class GuardDuty {
     } else {
       becomeGuard(player);
     }
+  }
+
+  private static void killPlayer(Player player) {
+    DamageSource source = DamageSource.builder(DamageType.GENERIC).build();
+    player.damage(Double.MAX_VALUE, source);
   }
 }

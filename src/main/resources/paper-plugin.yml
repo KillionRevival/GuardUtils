@@ -16,6 +16,8 @@ dependencies:
       load: BEFORE
     PacketWrapper:
       load: BEFORE
+    ExcellentCrates:
+      load: BEFORE
 permissions:
   guardutils.guard:
     description: Allows the player to use the guard command

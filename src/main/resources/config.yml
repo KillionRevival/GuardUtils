@@ -2,4 +2,6 @@ plugin-prefix: "&8[&3GuardUtils&8] &r"
 log-level: INFO
 
 countdown-time: 5
+hit-timeout: 30
 
+guard-crate-id: "guard"

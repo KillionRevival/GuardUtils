@@ -47,6 +47,8 @@ import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import su.nightexpress.excellentcrates.CratesAPI;
+import su.nightexpress.excellentcrates.CratesPlugin;
 import xyz.xenondevs.invui.InvUI;
 import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
@@ -73,6 +75,8 @@ public class GuardUtils extends JavaPlugin {
   private static PaperCommandManager<Source> commandManager;
   @Getter
   private static AnnotationParser<Source> annotationParser;
+  @Getter
+  private static CratesPlugin cratesPlugin;
 
   @Override
   public void onEnable() {
@@ -90,6 +94,8 @@ public class GuardUtils extends JavaPlugin {
     protocolManager = ProtocolLibrary.getProtocolManager();
 
     simpleClans = (SimpleClans) Objects.requireNonNull(getServer().getPluginManager().getPlugin("SimpleClans"));
+
+    cratesPlugin = CratesAPI.getPlugin();
 
     KillionCommons.getInstance().getScoreboardManager().registerAddition(this, new GuardHitsScoreboard());
 

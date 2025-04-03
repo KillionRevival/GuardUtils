@@ -2,6 +2,9 @@ package com.flyerzrule.mc.guardutils;
 
 import java.util.Objects;
 
+import com.flyerzrule.mc.guardutils.itemlock.commands.AddNBTDataCommand;
+import com.flyerzrule.mc.guardutils.itemlock.commands.NBTDebugCommand;
+import com.flyerzrule.mc.guardutils.itemlock.listeners.ItemListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -9,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.annotations.AnnotationParser;
+import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.exception.NoPermissionException;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.meta.SimpleCommandMeta;
@@ -139,6 +143,11 @@ public class GuardUtils extends JavaPlugin {
           return null;
         });
 
+    commandManager.parameterInjectorRegistry().registerInjector(
+            TypeToken.get(CommandSender.class),
+            (context, annotationAccessor) -> context.sender().source()
+    );
+
     // Register exception handler for permissions
     commandManager.exceptionController().registerHandler(NoPermissionException.class,
         (context) -> {
@@ -163,6 +172,8 @@ public class GuardUtils extends JavaPlugin {
     annotationParser.parse(new SwordCommand());
     annotationParser.parse(new BowCommand());
     annotationParser.parse(new OtherContrabandCommand());
+    annotationParser.parse(new AddNBTDataCommand());
+    annotationParser.parse(new NBTDebugCommand());
 
     getLogger().info("Command manager initialized!");
   }
@@ -175,6 +186,7 @@ public class GuardUtils extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new GuardKillDeathListener(), this);
     getServer().getPluginManager().registerEvents(new SignCreationListener(), this);
     getServer().getPluginManager().registerEvents(new SignCommandListener(), this);
+    getServer().getPluginManager().registerEvents(new ItemListeners(), this);
 
     myLogger.sendSuccess("Listeners have been registered.");
   }

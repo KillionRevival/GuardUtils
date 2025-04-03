@@ -2,6 +2,7 @@ package com.flyerzrule.mc.guardutils;
 
 import java.util.Objects;
 
+import com.flyerzrule.mc.guardutils.duty.listeners.PlayerInteractListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -175,6 +176,7 @@ public class GuardUtils extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new GuardKillDeathListener(), this);
     getServer().getPluginManager().registerEvents(new SignCreationListener(), this);
     getServer().getPluginManager().registerEvents(new SignCommandListener(), this);
+    getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
     myLogger.sendSuccess("Listeners have been registered.");
   }

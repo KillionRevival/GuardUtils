@@ -4,6 +4,7 @@ import com.flyerzrule.mc.guardutils.GuardUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Arrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDropItemEvent;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -32,8 +34,6 @@ public class ItemListeners implements Listener {
             event.setCancelled(true);
             player.getWorld().dropItemNaturally(player.getLocation(), item.clone());
             event.setCurrentItem(null);
-
-            player.sendMessage(Component.text("This is a guard item! You are not a guard!", NamedTextColor.RED));
         }
     }
 
@@ -45,8 +45,6 @@ public class ItemListeners implements Listener {
         GuardUtils.getMyLogger().sendDebug(String.format("Item picked up: %s", item.getType().name()));
         if (isItemTagged(item, player)) {
             event.setCancelled(true);
-
-            player.sendMessage(Component.text("This is a guard item! You are not a guard!", NamedTextColor.RED));
         }
     }
 
@@ -67,8 +65,6 @@ public class ItemListeners implements Listener {
             } else if (event.getHand() == EquipmentSlot.OFF_HAND) {
                 player.getInventory().setItemInOffHand(null);
             }
-
-            player.sendMessage(Component.text("This is a guard item! You are not a guard!", NamedTextColor.RED));
         }
     }
 
@@ -84,8 +80,18 @@ public class ItemListeners implements Listener {
 
             player.getWorld().dropItemNaturally(player.getLocation(), item.clone());
             player.setItemOnCursor(null);
+        }
+    }
 
-            player.sendMessage(Component.text("This is a guard item! You are not a guard!", NamedTextColor.RED));
+    @EventHandler
+    public void onArrowPickup(PlayerPickupArrowEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem().getItemStack();
+
+        if (item == null) return;
+        GuardUtils.getMyLogger().sendDebug(String.format("Arrow picked up: %s", item.getType().name()));
+        if (isItemTagged(item, player)) {
+            event.setCancelled(true);
         }
     }
 

@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import com.flyerzrule.mc.guardutils.duty.listeners.PlayerInteractListener;
 import com.flyerzrule.mc.guardutils.itemlock.commands.AddNBTDataCommand;
-import com.flyerzrule.mc.guardutils.itemlock.commands.NBTDebugCommand;
 import com.flyerzrule.mc.guardutils.itemlock.listeners.ItemListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.annotations.AnnotationParser;
-import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.exception.NoPermissionException;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.meta.SimpleCommandMeta;
@@ -174,7 +172,6 @@ public class GuardUtils extends JavaPlugin {
     annotationParser.parse(new BowCommand());
     annotationParser.parse(new OtherContrabandCommand());
     annotationParser.parse(new AddNBTDataCommand());
-    annotationParser.parse(new NBTDebugCommand());
 
     getLogger().info("Command manager initialized!");
   }

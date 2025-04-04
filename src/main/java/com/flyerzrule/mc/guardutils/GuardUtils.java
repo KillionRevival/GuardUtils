@@ -2,6 +2,7 @@ package com.flyerzrule.mc.guardutils;
 
 import java.util.Objects;
 
+import com.flyerzrule.mc.guardutils.duty.listeners.PlayerInteractListener;
 import com.flyerzrule.mc.guardutils.itemlock.commands.AddNBTDataCommand;
 import com.flyerzrule.mc.guardutils.itemlock.commands.NBTDebugCommand;
 import com.flyerzrule.mc.guardutils.itemlock.listeners.ItemListeners;
@@ -186,6 +187,7 @@ public class GuardUtils extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new GuardKillDeathListener(), this);
     getServer().getPluginManager().registerEvents(new SignCreationListener(), this);
     getServer().getPluginManager().registerEvents(new SignCommandListener(), this);
+    getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
     getServer().getPluginManager().registerEvents(new ItemListeners(), this);
 
     myLogger.sendSuccess("Listeners have been registered.");
